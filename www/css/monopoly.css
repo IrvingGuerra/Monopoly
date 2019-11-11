@@ -30,6 +30,13 @@ div{
 .derecha{
 	margin-right: auto;
 }
+.salida{
+	padding: 10px 10px;
+	text-align: center;
+}
+.salida i{
+	font-size: 60px;
+}
 .casilla {
 	height: 150px;
 	width: 150px;	
@@ -64,6 +71,14 @@ div{
 	font-size: 13px;
 	font-weight: bolder;
 	color: green;
+}
+.numero {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	font-size: 13px;
+	font-weight: bolder;
+	color: black;
 }
 .cartasRojas{
 	width: 300px;

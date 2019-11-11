@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!--<link rel="shortcut icon" type="image/x-icon" href="/assests/favicon.ico">-->
+	<link rel="stylesheet" type="text/css" href="css/monopoly.css">
+	<title>Monopoly</title>
+</head>
+<body>
+	<!-- El tablero se diseñará con css y js para poder ser full responsive -->
+	<div class="tablero">
+		<div class="col izquierda">
+		    <div class="casilla"></div>
+		    <div class="casilla">
+		    	<div class="color_propiedad rojo"></div>
+		    	<div class="info_propiedad">
+		    		<div class="titulo">NOMBRE DE LA PROPIEDAD</div>
+		    		<div class="propietario">PROPIETARIO</div>
+		    		<div class="precio">PRECIO $200</div>
+		    	</div>	
+		    </div>
+		    <div class="casilla"></div>
+		    <div class="casilla">
+		    	<div class="color_propiedad rojo"></div>
+		    	<div class="info_propiedad">
+		    		<div class="titulo">NOMBRE DE LA PROPIEDAD</div>
+		    		<div class="propietario">PROPIETARIO</div>
+		    		<div class="precio">PRECIO $200</div>
+		    	</div>	
+		    </div>
+		    <div class="casilla">
+		    	<div class="color_propiedad rojo"></div>
+		    	<div class="info_propiedad">
+		    		<div class="titulo">NOMBRE DE LA PROPIEDAD</div>
+		    		<div class="propietario">PROPIETARIO</div>
+		    		<div class="precio">PRECIO $200</div>
+		    	</div>	
+		    </div>
+		</div>
+		<div class="cambiaFila">
+			<div class="fila superior">
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+			</div>
+			<div class="cartasYDado">
+				<div class="cartasRojas disabled">
+					<i class="fa fa-question-circle"></i>
+				</div>
+				<div class="cartasAzules disabled">
+					<i class="fa fa-question-circle"></i>
+				</div>
+				<div class="dado">
+					<img id="dado" src="img/dado/1.png" onclick="randomDado()">
+				</div>
+			</div>
+			<div class="fila inferior">
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+				<div class="casilla"></div>
+			</div>
+		</div>
+		<div class="col derecha">
+			<div class="casilla"></div>
+		    <div class="casilla">
+		    	<div class="color_propiedad rojo"></div>
+		    	<div class="info_propiedad">
+		    		<div class="titulo">NOMBRE DE LA PROPIEDAD</div>
+		    		<div class="propietario">PROPIETARIO</div>
+		    		<div class="precio">PRECIO $200</div>
+		    	</div>	
+		    </div>
+		    <div class="casilla"></div>
+		    <div class="casilla">
+		    	<div class="color_propiedad rojo"></div>
+		    	<div class="info_propiedad">
+		    		<div class="titulo">NOMBRE DE LA PROPIEDAD</div>
+		    		<div class="propietario">PROPIETARIO</div>
+		    		<div class="precio">PRECIO $200</div>
+		    	</div>	
+		    </div>
+		    <div class="casilla">
+		    </div>
+		</div>
+
+	</div>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="js/monopoly.js"></script> <!-- Monopoly js -->
+</body>
+</html>

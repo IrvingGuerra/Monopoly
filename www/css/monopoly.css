@@ -65,8 +65,6 @@ div{
 	font-weight: bolder;
 	color: green;
 }
-.rojo {background-color: #C20A0A;}
-
 .cartasRojas{
 	width: 300px;
 	height: 150px;
@@ -139,9 +137,36 @@ div{
 	height: auto;
 }
 
+.alert {
+	position: absolute;
+	background-color: #27902C;
+	color: white;
+	padding: 15px 20px;
+	bottom: 5px;
+	left: 5px;
+	display: none;
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
 
 
-
+.rojo {background-color: #E83B3B;}
+.verde {background-color: #27902C;}
+.azulClaro {background-color: #57AED8;}
+.azulOscuro {background-color: #186184;}
 
 
 

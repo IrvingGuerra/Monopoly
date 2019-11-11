@@ -54,14 +54,18 @@
 				<div class="logo">
 					<img src="img/logo.png">
 				</div>
-				<div class="cartasRojas disabled">
+				<div class="cartasRojas disabled" onclick="getTarjeta(event,'roja')">
 					<i class="fa fa-question-circle"></i>
 				</div>
-				<div class="cartasAzules disabled">
+				<div class="cartasAzules disabled" onclick="getTarjeta(event,'azul')">
 					<i class="fa fa-question-circle"></i>
 				</div>
 				<div class="dado">
-					<img id="dado" src="img/dado/1.png" onclick="randomDado()">
+					<img id="dado" src="img/dado/1.png" onclick="randomDado(event)">
+				</div>
+				<div class="alert">
+					<span class="closebtn" onclick="$(this.parentElement).fadeOut();">&times;</span>
+					<label><strong>Información!</strong> Descripcion mas mas mas larga xd</label>
 				</div>
 			</div>
 			<div class="fila inferior">

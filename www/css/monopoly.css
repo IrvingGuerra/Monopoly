@@ -130,6 +130,27 @@ div{
 	box-shadow: inset 0 0 0 1px black;
 	background-color: #e5f9e0;
 }
+.carcel{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 50px;
+}
+.carcel img{
+	width: 70%;
+	height: auto;
+}
+.tarjeta{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 50px;
+}
+
 .cartasYDado{
 	background-color: #71A8DC;
 	height: 60vh;
@@ -258,6 +279,10 @@ div{
 
 .rojo {background-color: #D50E0E;}
 .verde {background-color: #27902C;}
+.morado {background-color: #8449A3;}
+.azul {background-color: #3953BB;}
+
+
 .azulClaro {background-color: #57AED8;}
 .azulOscuro {background-color: #186184;}
 

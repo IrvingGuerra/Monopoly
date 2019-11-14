@@ -9,8 +9,8 @@ private:
 
 
  	//Valores necesarios para tipo propiedad
- 	
- 	bool status; //false = Si es propiedad nadie la compro, true = ya tiene propietario
+
+ 	bool status; //false = Si es propiedad nadie la compro, saldra aviso si se desea comprar, true = ya tiene propietario
  	bool inout; //true = el jugador paga, false = el jugador recibe
  	int cantidad; //Se complementa con inout, es la cantidad que dara o recibira
  	int propietario; //Guarda el id del jugador

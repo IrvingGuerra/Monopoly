@@ -130,6 +130,46 @@ div{
 	box-shadow: inset 0 0 0 1px black;
 	background-color: #e5f9e0;
 }
+.player1 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: red;
+	bottom: 20px;
+	left: 10px;
+}
+.player2 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: blue;
+	bottom: 20px;
+	left: 35px;
+}
+.player3 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: green;
+	bottom: 20px;
+	left: 60px;
+}
+.player4 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: white;
+	bottom: 20px;
+	left: 85px;
+}
 .carcel{
 	width: 100%;
 	height: 100%;

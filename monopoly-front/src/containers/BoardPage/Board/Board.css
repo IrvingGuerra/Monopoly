@@ -1,0 +1,246 @@
+body,html{
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+	color: black;
+	font-size: 15px;
+	background-color: #71A8DC;
+	margin: 0;
+  	padding: 0;
+}
+div{
+	position: relative;
+	box-sizing:border-box; 
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+
+.tablero {
+	background-color: white;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: row; /*Position relative fluyen como columnas*/
+}
+.cambiaFila {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+}
+.fila {
+	display: flex;
+	flex-direction: row;  /*Position relative fluyen como filas*/
+}
+.derecha{
+	margin-right: auto;
+}
+.salida{
+	padding: 10px 10px;
+	text-align: center;
+}
+.salida i{
+	font-size: 60px;
+}
+.casilla {
+	height: 20vh;
+	width: 10vw;	
+	/*border: 1px solid black;*/
+	box-shadow: inset 0 0 0 1px black;
+	background-color: #e5f9e0;
+}
+.player1 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: red;
+	bottom: 20px;
+	left: 10px;
+}
+.player2 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: blue;
+	bottom: 20px;
+	left: 35px;
+}
+.player3 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: green;
+	bottom: 20px;
+	left: 60px;
+}
+.player4 {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 3px solid black;
+	background: white;
+	bottom: 20px;
+	left: 85px;
+}
+.carcel{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 50px;
+}
+.carcel img{
+	width: 70%;
+	height: auto;
+}
+.tarjeta{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 50px;
+}
+
+.cartasYDado{
+	background-color: #71A8DC;
+	height: 60vh;
+}
+.color_propiedad {
+	width: 100%;
+	height: 20%;
+	border-bottom: 1px solid black;
+}
+.info_propiedad{
+	padding: 10px 10px;
+	width: 100%;
+	height: 80%;
+}
+.titulo {	
+}
+.propietario {
+	margin-top: 5px;
+	font-size: 13px;
+	font-weight: bolder;
+	color: blue;
+}
+.precio {
+	position: absolute;
+	bottom: 5px;
+	font-size: 13px;
+	font-weight: bolder;
+	color: green;
+}
+.numero {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	font-size: 13px;
+	font-weight: bolder;
+	color: black;
+}
+.cartasRojas{
+	width: 20vw;
+	height: 20vh;
+	background-color: #C20A0A;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 80px;
+	margin: 10px 10px;
+	cursor: pointer;
+}
+
+.logo{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 70%;
+	opacity: 0.5;
+}
+
+.logo img{
+	width: 100%;
+	height: auto;
+}
+
+
+.cartasAzules{
+	width: 20vw;
+	height: 20vh;
+	background-color: #3953BB;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 80px;
+	margin: 10px 10px;
+	cursor: pointer;
+}
+
+.cartasAzules.disabled,.cartasRojas.disabled{
+	opacity: 0.8;
+	cursor: no-drop;
+}
+
+.dado{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 20vh;
+	height: 20vh;
+	background-color: white;
+	cursor: pointer;
+}
+.dado.disabled{
+	opacity: 0.5;
+	cursor: no-drop;
+}
+
+.dado img{
+	width: 100%;
+	height: auto;
+}
+
+.alert {
+	position: absolute;
+	background-color: #27902C;
+	color: white;
+	padding: 15px 20px;
+	bottom: 5px;
+	left: 5px;
+	display: none;
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+
+.rojo {background-color: #D50E0E;}
+.verde {background-color: #27902C;}
+.morado {background-color: #8449A3;}
+.azul {background-color: #3953BB;}
+
+
+.azulClaro {background-color: #57AED8;}
+.azulOscuro {background-color: #186184;}
+
+
+

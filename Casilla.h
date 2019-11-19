@@ -1,7 +1,5 @@
 #ifndef CASILLA_H
 #define CASILLA_H
-
-
 class Casilla{
 private:
     int numero;
@@ -13,10 +11,15 @@ private:
  	int propietario; //Guarda el id del jugador
  	char nombre[10]; //Sirve para casillas del tipo Propiedad
  	char color[6];
-
 public:
-    Casilla();
+    Casilla(int numero, char nombre[10]);
+    void setType(int type);
+	void setStatus(bool status);
+	void setInout(bool inout);
+	void setCantidad(int cantidad);
+	void setPropietario(int propietario);
+	void setNombre(char nombre[10]);
+	void setColor(char color[6]);
     ~Casilla();
 };
-
 #endif

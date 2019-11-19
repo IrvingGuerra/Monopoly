@@ -1,7 +1,7 @@
 PROJECT = cliente
 CFLAGS = -Wall
 LDFLAGS = -lm -lpthread
-CC = g++ -g3
+CC = g++
 EXCLUDED_FILES = servidorWEB.cpp
 OBJECTS = $(patsubst %.cpp, %.o, $(filter-out $(EXCLUDED_FILES),$(wildcard *.cpp)))
 
@@ -20,4 +20,3 @@ clean:
 
 run:
 	./$(PROJECT)
-

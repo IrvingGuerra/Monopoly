@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
+#include "Tablero.h"
+#include "Casilla.h"
+#include "Jugador.h"
 
 using namespace std;
 
@@ -10,9 +13,9 @@ static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
 static int idTableros = 0;
 
-
-static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm) {
 /*
+static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm) {
+
 	char response[256];
 	//Constriumos la respuesta
 	mg_get_http_var(&hm->body, "query", response,sizeof(response));
@@ -31,8 +34,9 @@ static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm
 	printf("Cadena enviada: %s\n", response);
 	mg_send_head(nc,200,strlen(response), "Content-Type: text/plain");
 	mg_printf(nc, "%s", response);
-*/
+
 }
+*/
 
 static void ev_handler(struct mg_connection *nc, int ev, void *p) {
  	struct http_message *hm = (struct http_message *) p;

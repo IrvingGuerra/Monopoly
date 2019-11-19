@@ -5,7 +5,7 @@
 
 class Tablero{
 private:
-    Casilla[26] casillas; //Cantidad de casillas que existen
+    Casilla casillas[26]; //Cantidad de casillas que existen
 public:
     Tablero();
     ~Tablero();

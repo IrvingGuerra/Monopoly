@@ -4,11 +4,6 @@
 #include <iostream>
 #include <string.h>
 
-#define id_red "192.168.0.0"
-#define host_inicial "8"
-#define host_final "8"
-
-
 using namespace std;
 
 static const char *s_http_port = "8000";
@@ -16,7 +11,7 @@ static struct mg_serve_http_opts s_http_server_opts;
 
 
 static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm) {
-
+/*
 	char response[256];
 	//Constriumos la respuesta
 	mg_get_http_var(&hm->body, "query", response,sizeof(response));
@@ -35,21 +30,29 @@ static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm
 	printf("Cadena enviada: %s\n", response);
 	mg_send_head(nc,200,strlen(response), "Content-Type: text/plain");
 	mg_printf(nc, "%s", response);
-
-
+*/
 }
 
 static void ev_handler(struct mg_connection *nc, int ev, void *p) {
-	char query[256];
  	struct http_message *hm = (struct http_message *) p;
-
-
 	if (ev == MG_EV_HTTP_REQUEST) {
-		if (mg_vcmp(&hm->uri, "/startWeb") == 0) { 
-			
-			mg_get_http_var(&hm->body, "query", query,sizeof(query));
-			printf("Peticion de la web: : %s\n",query);
-		    handle_sendRedData(nc, hm);  
+		if (mg_vcmp(&hm->uri, "/startGameSolo") == 0) { 
+
+			printf("Iniciando Juego en Modo SOLO\n");
+
+			char username[256];
+			char usercolor[256];
+
+
+			mg_get_http_var(&hm->body, "username", username,sizeof(username));
+			mg_get_http_var(&hm->body, "usercolor", usercolor,sizeof(usercolor));
+
+			printf("Nombre de usuario: %s\n",username);
+			printf("Color de usuario: %s\n",usercolor);
+
+
+		    //handle_sendRedData(nc, hm);  
+
 		}else{
 			mg_serve_http(nc, (struct http_message *) p, s_http_server_opts);
 		}
@@ -76,5 +79,6 @@ int main(void) {
 		mg_mgr_poll(&mgr, 1000);
 	}
 	mg_mgr_free(&mgr);
+
 	return 0;
 }

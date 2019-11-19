@@ -26,6 +26,24 @@ div{
 }
 /* CSS DE INDEX */
 
+input[type=text],input[type=number] {
+	width: 30%;
+	padding: 12px 20px;
+	margin: 15px 10px;
+	box-sizing: border-box;
+	font-family: Splatch;
+	font-size: 15px;
+	text-align: center;
+	border: 3px solid gray;
+	-webkit-transition: 0.5s;
+	transition: 0.5s;
+	outline: none;
+}
+
+input[type=text]:focus {
+	border: 3px solid #555;
+}
+
 .contenido{
 	width: 100%;
 	height: 100vh;
@@ -39,13 +57,24 @@ div{
 	width: 80%;
 	height: auto;
 }
-.modo{
+.container{
 	font-family: Splatch;
 	font-size: 15px;
+	width: 100%;
+	margin: 0 auto;
+	margin-bottom: 50px;
 }
-.reglas{
-	font-family: Splatch;
-	font-size: 15px;
+
+.alerta {
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+	font-size: 17px;
+	background-color: #27902C;
+	width: 500px;
+	margin: 0 auto;
+	color: white;
+	padding: 15px 20px;
+	display: none;
+	margin-top: 10px;
 }
 
 .btn{
@@ -292,6 +321,7 @@ div{
 }
 
 .alert {
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
 	position: absolute;
 	background-color: #27902C;
 	color: white;
@@ -300,6 +330,7 @@ div{
 	left: 5px;
 	display: none;
 }
+
 
 .closebtn {
 	margin-left: 15px;

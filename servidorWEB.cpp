@@ -8,6 +8,7 @@ using namespace std;
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
+static int idTableros = 0;
 
 
 static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm) {
@@ -49,6 +50,10 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p) {
 
 			printf("Nombre de usuario: %s\n",username);
 			printf("Color de usuario: %s\n",usercolor);
+
+			idTableros++;
+
+			Tablero tablero(idTableros);
 
 
 		    //handle_sendRedData(nc, hm);  

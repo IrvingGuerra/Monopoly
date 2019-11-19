@@ -5,9 +5,10 @@
 
 class Tablero{
 private:
+	int idTablero;
     Casilla casillas[26]; //Cantidad de casillas que existen
 public:
-    Tablero();
+    Tablero(int idTablero);
     ~Tablero();
 };
 

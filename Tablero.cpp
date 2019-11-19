@@ -1,7 +1,7 @@
 #include "Tablero.h"
 
-Tablero::Tablero(){
-  
+Tablero::Tablero(int idTablero){
+	this->idTablero = idTablero;
 }
 
 

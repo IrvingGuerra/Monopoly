@@ -3,6 +3,9 @@
 
 #include "Casilla.h"
 
+#include <set>
+
+
 class Jugador{
 private:
     bool status;    //false = Castigado por x turnos, true = Disponible
@@ -14,6 +17,8 @@ private:
     int vueltas;
     int saldo;
     //Casilla casillas[26]; //Puede ser poseedor de hasta 26 casillas del tipo Propiedad
+    std::set<Casilla> propiedades;
+    //std::vector<Casilla> casillas;
 public:
     Jugador(int id, char nombre[10], char color[6]);
     void setStatus(bool status);
@@ -21,6 +26,7 @@ public:
     void setCasilla(int casilla);
     void setVueltas(int vueltas);
     void setSaldo(int saldo);
+    void insertPropiedad(Casilla propiedad);
     ~Jugador();
 };
 

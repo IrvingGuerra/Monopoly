@@ -1,6 +1,8 @@
 #include "Jugador.h"
 #include "string.h"
 
+using namespace std; 
+
 Jugador::Jugador(int id, char nombre[10], char color[6]){
 	this->status = true;
 	this->turnos = 0;
@@ -25,6 +27,10 @@ void Jugador::setVueltas(int vueltas){
 }
 void Jugador::setSaldo(int saldo){
 	this->saldo += saldo;
+}
+void Jugador::insertPropiedad(Casilla propiedad){
+	set<int>::iterator it = this->propiedades.begin(); 
+	this->propiedades.insert(propiedad);
 }
 Jugador::~Jugador(){
     //delete[] datos;

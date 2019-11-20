@@ -6,8 +6,6 @@
 #include "Casilla.h"
 #include "Jugador.h"
 
-
-
 class Tablero{
 private:
 	int idTablero;

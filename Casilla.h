@@ -16,7 +16,7 @@ private:
 	char color[6];
 
 public:
-	Casilla(int numero, char nombre[10]);
+	Casilla(int numero, int type, int cantidad,char nombre[10], char color[6]);
 	void setType(int type);
 	void setStatus(bool status);
 	void setCantidad(int cantidad);

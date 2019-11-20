@@ -1,14 +1,14 @@
 #include "Casilla.h"
 #include "string.h"
 
-Casilla::Casilla(int numero, char nombre[10])
+Casilla::Casilla(int numero, int type, int cantidad,char nombre[10], char color[6])
 {
 	this->numero = numero;
-	this->type = 1; //Casilla vacia por defecto
+	this->type = type;
 	this->status = false;
-	this->cantidad = 200;
+	this->cantidad = cantidad;
 	strcpy(this->nombre, nombre);
-	strcpy(this->color, "FFFFFF");
+	strcpy(this->color, color);
 }
 void Casilla::setType(int type)
 {

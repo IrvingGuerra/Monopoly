@@ -4,7 +4,6 @@
 #include <set>
 #include <cstring>
 
-#include "Tablero.h"
 #include "Casilla.h"
 
 class Jugador
@@ -70,7 +69,7 @@ public:
     void insertPropiedad(Casilla propiedad);
 
     // Método para cambiar el estado del tablero (dado, cartas, etc.) usa la flag 'esBot'.
-    void jugarTurno(Tablero t);
+    //void jugarTurno(Tablero t);
 
     // Destructor.
     ~Jugador();

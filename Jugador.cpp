@@ -64,12 +64,12 @@ void Jugador::insertPropiedad(Casilla propiedad)
 {
 	this->propiedades.insert(propiedad);
 }
-
+/*
 void Jugador::jugarTurno(Tablero t)
 {
 	// Juega un turno ya sea bot o humano.
 }
-
+*/
 // Quizás no usaremos el destructor.
 Jugador::~Jugador()
 {

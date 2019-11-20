@@ -48,8 +48,7 @@ function joinGame(gameMode,type){
 			            usercolor: $('#usercolor').val()
 			        },
 			        success: function(data){
-			        	console.log(data.status);
-			        	if (data == "ok") {
+			        	if (data.status == "ok") {
 			        		window.location = 'monopoly.html';
 			        	}
 			        }

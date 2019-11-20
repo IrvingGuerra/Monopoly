@@ -44,10 +44,10 @@ static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm
 }
 */
 
-static void responseConfirmSolo(struct mg_connection *nc, struct http_message *hm) {
+static void responseConfirmSolo(struct mg_connection *nc, struct http_message *hm, int idTablero) {
 	Document d;
-	Pointer("/project").Set(d, "RapidJSON");
-	Pointer("/stars").Set(d, 10);
+	Pointer("/status").Set(d, "ok");
+	Pointer("/idTablero").Set(d, idTablero);
 	StringBuffer buffer;
 	Writer<StringBuffer> writer(buffer);
 	d.Accept(writer);
@@ -64,8 +64,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
 	struct http_message *hm = (struct http_message *)p;
 	if (ev == MG_EV_HTTP_REQUEST)
 	{
-		if (mg_vcmp(&hm->uri, "/startGameSolo") == 0)
-		{
+		if (mg_vcmp(&hm->uri, "/startGameSolo") == 0){
 			printf("Iniciando Juego en Modo SOLO\n");
 			char username[256];
 			char usercolor[256];
@@ -85,10 +84,11 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
 			tablero.insertUsuario(bot2);
 			tablero.insertUsuario(bot3);
 			//printf("Casilla: %s\n",tablero.getCasilla(0));
-			responseConfirmSolo(nc, hm);
-		}
-		else
-		{
+			responseConfirmSolo(nc, hm, idTableros);
+		}else if (mg_vcmp(&hm->uri, "/refrescaTurno") == 0){
+			//Se entra a esta peticion cada cierto tiempo
+			
+		}else{
 			mg_serve_http(nc, (struct http_message *)p, s_http_server_opts);
 		}
 	}

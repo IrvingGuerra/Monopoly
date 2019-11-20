@@ -17,7 +17,7 @@ private:
     int vueltas;
     int saldo;
     //Casilla casillas[26]; //Puede ser poseedor de hasta 26 casillas del tipo Propiedad
-    std::set<Casilla> propiedades;
+    std::set<Casilla &> propiedades;
     //std::vector<Casilla> casillas;
 public:
     Jugador(int id, char nombre[10], char color[6]);
@@ -26,7 +26,7 @@ public:
     void setCasilla(int casilla);
     void setVueltas(int vueltas);
     void setSaldo(int saldo);
-    void insertPropiedad(Casilla propiedad);
+    void insertPropiedad(Casilla &propiedad);
     ~Jugador();
 };
 

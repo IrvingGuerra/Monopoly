@@ -28,8 +28,8 @@ void Jugador::setVueltas(int vueltas){
 void Jugador::setSaldo(int saldo){
 	this->saldo += saldo;
 }
-void Jugador::insertPropiedad(Casilla propiedad){
-	set<int>::iterator it = this->propiedades.begin(); 
+void Jugador::insertPropiedad(Casilla &propiedad){
+	//set<Casilla&>::iterator it = propiedades.begin(); 
 	this->propiedades.insert(propiedad);
 }
 Jugador::~Jugador(){

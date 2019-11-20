@@ -1,5 +1,5 @@
 PROJECT = servidorWeb
-CFLAGS = -Wall
+CFLAGS = -Wall -std=c++11
 CC = g++
 EXCLUDED_FILES = servidor.cpp
 OBJECTS = $(patsubst %.cpp, %.o, $(filter-out $(EXCLUDED_FILES), $(wildcard *.cpp)))

@@ -13,6 +13,9 @@ private:
     std::vector<Jugador> jugadores; // 4 jugadores como maximo
 public:
     Tablero(int idTablero);
+    void insertUsuario(Jugador j);
+    char * getCasilla(int num);
+    char * getJugador(int num);
     ~Tablero();
 };
 

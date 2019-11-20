@@ -17,12 +17,22 @@ private:
 
 public:
 	Casilla(int numero, int type, int cantidad,char nombre[10], char color[6]);
+
 	void setType(int type);
 	void setStatus(bool status);
 	void setCantidad(int cantidad);
 	void setPropietario(int propietario);
 	void setNombre(char nombre[10]);
 	void setColor(char color[6]);
+
+	int getType();
+	bool getStatus();
+	int getCantidad();
+	int getPropietario();
+	char* getNombre();
+	char* getColor();
+
+
 	int getNumero() const;
 	~Casilla();
 };

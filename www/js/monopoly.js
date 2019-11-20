@@ -41,13 +41,17 @@ function joinGame(gameMode,type){
 				//Unicamente iniciamos juego, usuario y bots
 				$.ajax({
 			        type: "POST",
+			        dataType: "json",
 			        url: "/startGameSolo",
 			        data:{
 			            username: $('#username').val(),
 			            usercolor: $('#usercolor').val()
 			        },
 			        success: function(data){
-			            console.log(data);
+			        	console.log(data.status);
+			        	if (data == "ok") {
+			        		window.location = 'monopoly.html';
+			        	}
 			        }
 			    });
 			break;

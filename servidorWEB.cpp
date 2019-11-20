@@ -7,7 +7,13 @@
 #include "Casilla.h"
 #include "Jugador.h"
 
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/pointer.h"
+#include "rapidjson/stringbuffer.h"
+
 using namespace std;
+using namespace rapidjson;
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
@@ -38,6 +44,21 @@ static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm
 }
 */
 
+static void responseConfirmSolo(struct mg_connection *nc, struct http_message *hm) {
+	Document d;
+	Pointer("/project").Set(d, "RapidJSON");
+	Pointer("/stars").Set(d, 10);
+	StringBuffer buffer;
+	Writer<StringBuffer> writer(buffer);
+	d.Accept(writer);
+	char response[256];
+	mg_get_http_var(&hm->body, "query", response,sizeof(response));
+	strcpy (response, buffer.GetString());
+	printf("Cadena enviada: %s\n", response);
+	mg_send_head(nc,200,strlen(response), "Content-Type: text/plain");
+	mg_printf(nc, "%s", response);
+}
+
 static void ev_handler(struct mg_connection *nc, int ev, void *p)
 {
 	struct http_message *hm = (struct http_message *)p;
@@ -45,23 +66,26 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
 	{
 		if (mg_vcmp(&hm->uri, "/startGameSolo") == 0)
 		{
-
 			printf("Iniciando Juego en Modo SOLO\n");
-
 			char username[256];
 			char usercolor[256];
-
 			mg_get_http_var(&hm->body, "username", username, sizeof(username));
 			mg_get_http_var(&hm->body, "usercolor", usercolor, sizeof(usercolor));
-
 			printf("Nombre de usuario: %s\n", username);
 			printf("Color de usuario: %s\n", usercolor);
-
 			idTableros++;
-
 			Tablero tablero(idTableros);
-
-			//handle_sendRedData(nc, hm);
+			printf("Tu id de tablero es: %d\n", idTableros);
+			Jugador player(username,usercolor,false);
+			Jugador bot1((char *)"bot1",(char *)"FF0000",true);
+			Jugador bot2((char *)"bot2",(char *)"E800FF",true);
+			Jugador bot3((char *)"bot3",(char *)"005DFF",true);
+			tablero.insertUsuario(player);
+			tablero.insertUsuario(bot1);
+			tablero.insertUsuario(bot2);
+			tablero.insertUsuario(bot3);
+			//printf("Casilla: %s\n",tablero.getCasilla(0));
+			responseConfirmSolo(nc, hm);
 		}
 		else
 		{
@@ -95,3 +119,4 @@ int main(void)
 
 	return 0;
 }
+

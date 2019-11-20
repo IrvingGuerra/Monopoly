@@ -2,7 +2,7 @@
 
 int Jugador::instances = 0;
 
-Jugador::Jugador(char nombre[10], char color[6], bool isBot)
+Jugador::Jugador(char nombre[10], char color[6], bool esBot)
 {
 	id = ++Jugador::instances;
 	strcpy(this->nombre, nombre);

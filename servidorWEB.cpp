@@ -38,45 +38,48 @@ static void handle_sendRedData(struct mg_connection *nc, struct http_message *hm
 }
 */
 
-static void ev_handler(struct mg_connection *nc, int ev, void *p) {
- 	struct http_message *hm = (struct http_message *) p;
-	if (ev == MG_EV_HTTP_REQUEST) {
-		if (mg_vcmp(&hm->uri, "/startGameSolo") == 0) { 
+static void ev_handler(struct mg_connection *nc, int ev, void *p)
+{
+	struct http_message *hm = (struct http_message *)p;
+	if (ev == MG_EV_HTTP_REQUEST)
+	{
+		if (mg_vcmp(&hm->uri, "/startGameSolo") == 0)
+		{
 
 			printf("Iniciando Juego en Modo SOLO\n");
 
 			char username[256];
 			char usercolor[256];
 
+			mg_get_http_var(&hm->body, "username", username, sizeof(username));
+			mg_get_http_var(&hm->body, "usercolor", usercolor, sizeof(usercolor));
 
-			mg_get_http_var(&hm->body, "username", username,sizeof(username));
-			mg_get_http_var(&hm->body, "usercolor", usercolor,sizeof(usercolor));
-
-			printf("Nombre de usuario: %s\n",username);
-			printf("Color de usuario: %s\n",usercolor);
+			printf("Nombre de usuario: %s\n", username);
+			printf("Color de usuario: %s\n", usercolor);
 
 			idTableros++;
 
 			Tablero tablero(idTableros);
 
-
-		    //handle_sendRedData(nc, hm);  
-
-		}else{
-			mg_serve_http(nc, (struct http_message *) p, s_http_server_opts);
+			//handle_sendRedData(nc, hm);
+		}
+		else
+		{
+			mg_serve_http(nc, (struct http_message *)p, s_http_server_opts);
 		}
 	}
-
 }
 
-int main(void) {
+int main(void)
+{
 	struct mg_mgr mgr;
 	struct mg_connection *nc;
 	mg_mgr_init(&mgr, NULL);
 
 	printf("Starting web server on port %s\n", s_http_port);
 	nc = mg_bind(&mgr, s_http_port, ev_handler);
-	if (nc == NULL) {
+	if (nc == NULL)
+	{
 		printf("Failed to create listener\n");
 		return 1;
 	}
@@ -84,7 +87,8 @@ int main(void) {
 	mg_set_protocol_http_websocket(nc);
 	s_http_server_opts.document_root = "www"; // Serve current directory
 	s_http_server_opts.enable_directory_listing = "yes";
-	for (;;) {
+	for (;;)
+	{
 		mg_mgr_poll(&mgr, 1000);
 	}
 	mg_mgr_free(&mgr);

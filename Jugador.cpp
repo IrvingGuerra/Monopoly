@@ -1,37 +1,77 @@
 #include "Jugador.h"
-#include "string.h"
 
-using namespace std; 
+int Jugador::instances = 0;
 
-Jugador::Jugador(int id, char nombre[10], char color[6]){
-	this->status = true;
-	this->turnos = 0;
-    this->id = id;
-    strcpy(this->nombre, nombre);
-    strcpy(this->color, color);
-    this->casilla = 0; //Casilla 0 de salida
-    this->vueltas = 0;
-    this->saldo = 100000; //Inicia con 100,000
+Jugador::Jugador(char nombre[10], char color[6], bool isBot)
+{
+	id = ++Jugador::instances;
+	strcpy(this->nombre, nombre);
+	strcpy(this->color, color);
+	this->esBot = esBot;
 }
-void Jugador::setStatus(bool status){
-	this->status = status;
-}
-void Jugador::setTurnos(int turnos){
-	this->turnos = turnos;
-}
-void Jugador::setCasilla(int casilla){
+
+void Jugador::setCasilla(int casilla)
+{
 	this->casilla = casilla;
 }
-void Jugador::setVueltas(int vueltas){
+
+void Jugador::setVueltas(int vueltas)
+{
 	this->vueltas = vueltas;
 }
-void Jugador::setSaldo(int saldo){
+
+void Jugador::setSaldo(int saldo)
+{
 	this->saldo += saldo;
 }
-void Jugador::insertPropiedad(Casilla &propiedad){
-	//set<Casilla&>::iterator it = propiedades.begin(); 
+
+void Jugador::setEsTurno(bool esTurno)
+{
+	this->saldo += saldo;
+}
+
+void Jugador::setTurnosEnCastigo(int turnosEnCastigo)
+{
+	this->turnosEnCastigo = turnosEnCastigo;
+}
+
+int Jugador::getTurnosEnCastigo(void)
+{
+	return turnosEnCastigo;
+}
+
+int Jugador::getCasilla(void)
+{
+	return casilla;
+}
+
+int Jugador::getVueltas(void)
+{
+	return vueltas;
+}
+
+int Jugador::getSaldo(void)
+{
+	return saldo;
+}
+
+bool Jugador::getEsTurno(void)
+{
+	return esTurno;
+}
+
+void Jugador::insertPropiedad(Casilla propiedad)
+{
 	this->propiedades.insert(propiedad);
 }
-Jugador::~Jugador(){
-    //delete[] datos;
+
+void Jugador::jugarTurno(Tablero t)
+{
+	// Juega un turno ya sea bot o humano.
+}
+
+// Quizás no usaremos el destructor.
+Jugador::~Jugador()
+{
+	//delete[] datos;
 }

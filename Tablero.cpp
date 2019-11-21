@@ -26,9 +26,9 @@ void Tablero::updateTurno(){
 }
 
 char * Tablero::getCasilla(int num){
-    char *casilla = (char *) calloc(20,sizeof(char));
-    sprintf(casilla, "%d|%d|%d|%d|%d|%s|%s", casillas[num].getNumero(),casillas[num].getType(),casillas[num].getStatus(),casillas[num].getCantidad(),casillas[num].getPropietario(),casillas[num].getNombre(),casillas[num].getColor());
-    return casilla;
+    // char *casilla = (char *) calloc(20,sizeof(char));
+    // sprintf(casilla, "%d|%d|%d|%d|%d|%s|%s", casillas[num].getNumero(),casillas[num].getType(),casillas[num].getStatus(),casillas[num].getCantidad(),casillas[num].getPropietario(),casillas[num].getNombre(),casillas[num].getColor());
+    // return casilla;
 }
 
 Tablero::~Tablero(){

@@ -21,18 +21,18 @@ static int idTableros = 0;
 
 void onGetBoard (struct mg_connection *nc, struct http_message *hm)
 {
-	Document d;
-	Pointer("/status").Set(d, "ok");
-	Pointer("/idTablero").Set(d, idTablero);
-	StringBuffer buffer;
-	Writer<StringBuffer> writer(buffer);
-	d.Accept(writer);
-	char response[256];
-	mg_get_http_var(&hm->body, "query", response,sizeof(response));
-	strcpy (response, buffer.GetString());
-	printf("Cadena enviada: %s\n", response);
-	mg_send_head(nc,200,strlen(response), "Content-Type: text/plain");
-	mg_printf(nc, "%s", response);
+	// Document d;
+	// Pointer("/status").Set(d, "ok");
+	// Pointer("/idTablero").Set(d, idTablero);
+	// StringBuffer buffer;
+	// Writer<StringBuffer> writer(buffer);
+	// d.Accept(writer);
+	// char response[256];
+	// mg_get_http_var(&hm->body, "query", response,sizeof(response));
+	// strcpy (response, buffer.GetString());
+	// printf("Cadena enviada: %s\n", response);
+	// mg_send_head(nc,200,strlen(response), "Content-Type: text/plain");
+	// mg_printf(nc, "%s", response);
 }
 
 

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 
-Casilla::Casilla(int numero, int type, int cantidad,char nombre[10], char color[6])
+Casilla::Casilla(int numero, char *type, int cantidad,char nombre[10], char color[6])
 {
 	this->numero = numero;
 	this->type = type;
@@ -13,7 +13,7 @@ Casilla::Casilla(int numero, int type, int cantidad,char nombre[10], char color[
 	strcpy(this->nombre, nombre);
 	strcpy(this->color, color);
 }
-void Casilla::setType(int type)
+void Casilla::setTipo(int type)
 {
 	this->type = type;
 }

@@ -35,7 +35,8 @@ private:
     int saldo = 40000;
 
     // Indica si es el turno para que el jugador tire.
-    bool esTurno = false;
+    // REEMPLAZADO POR ATRIBUTO TURNO EN TABLERO
+    // bool esTurno = false;
 
     // Turnos en que el jugador está castigado.
     int turnosEnCastigo = 0;
@@ -55,21 +56,19 @@ public:
     void setCasilla(int casilla);
     void setVueltas(int vueltas);
     void setSaldo(int saldo);
-    void setEsTurno(bool esTurno);
     void setTurnosEnCastigo(int turnos);
-    //void setDado(Tablero, int valorDado); // incluido en jugar.
 
-    int getTurnosEnCastigo(void);
     int getCasilla(void);
     int getVueltas(void);
     int getSaldo(void);
-    bool getEsTurno(void);
+    int getTurnosEnCastigo(void);
 
     // Guarda una propiedad y modifica el tablero.
     void insertPropiedad(Casilla propiedad);
 
-    // Método para cambiar el estado del tablero (dado, cartas, etc.) usa la flag 'esBot'.
-    //void jugarTurno(Tablero t);
+    // Crea una cadena JSON con los datos del jugador.
+    char * toJSON(void);
+
 
     // Destructor.
     ~Jugador();

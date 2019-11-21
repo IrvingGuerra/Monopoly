@@ -25,11 +25,6 @@ void Jugador::setSaldo(int saldo)
 	this->saldo += saldo;
 }
 
-void Jugador::setEsTurno(bool esTurno)
-{
-	this->saldo += saldo;
-}
-
 void Jugador::setTurnosEnCastigo(int turnosEnCastigo)
 {
 	this->turnosEnCastigo = turnosEnCastigo;
@@ -55,11 +50,6 @@ int Jugador::getSaldo(void)
 	return saldo;
 }
 
-bool Jugador::getEsTurno(void)
-{
-	return esTurno;
-}
-
 void Jugador::insertPropiedad(Casilla propiedad)
 {
 	this->propiedades.insert(propiedad);
@@ -73,5 +63,4 @@ void Jugador::jugarTurno(Tablero t)
 // Quizás no usaremos el destructor.
 Jugador::~Jugador()
 {
-	//delete[] datos;
 }

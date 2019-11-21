@@ -41,6 +41,17 @@ void Tablero::insertUsuario(Jugador j){
     jugadores.push_back(j);
 }
 
+int Tablero::getTurno(){
+    return this->turno;
+}
+
+void Tablero::updateTurno(){
+	int size = jugadores.size();
+	turno++;
+	if (turno>size){
+		turno = 1;
+	}
+}
 
 char * Tablero::getCasilla(int num){
     char *casilla = (char *) calloc(20,sizeof(char));

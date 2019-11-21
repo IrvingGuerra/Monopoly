@@ -1,40 +1,13 @@
-
-/*$(window).resize(function() {
-	console.log("Cambio tamaño de pantalla");
-	inizializarTablero();
-});
-
-function inizializarTablero(){
-	var alto = $(document).height();
-	var ancho = $(document).width();
-	var casillaAlto = (alto / 5);
-	var casillaAncho= (ancho / 10);
-	$(".cambiaFila").height(alto);
-	$(".casilla").height(casillaAlto-2);
-	$(".casilla").width(casillaAncho-2);
-	$(".cartasYDado").height((casillaAlto)*3);
-	$(".cartasRojas").height(casillaAlto);
-	$(".cartasRojas").width(casillaAncho*2);
-	$(".cartasAzules").height(casillaAlto);
-	$(".cartasAzules").width(casillaAncho*2);
-}
-*/
+var idTablero = null;
 
 $(document).ready(function() {
+	setInterval('updateGame()',1000);
 	$.getJSON('https://api.ipify.org?format=json', function(data){
 	    console.log(data.ip);
 	});
 });
 
-
-function configureProfile() {
-	window.location = 'configure.html';
-}
-
-
-
 function joinGame(gameMode,type){
-
 	if ($('#username').val() != '') {
 		switch(gameMode){
 			case 'solo':
@@ -49,6 +22,7 @@ function joinGame(gameMode,type){
 			        },
 			        success: function(data){
 			        	if (data.status == "ok") {
+			        		idTablero = data.idTablero;
 			        		window.location = 'monopoly.html';
 			        	}
 			        }
@@ -70,57 +44,14 @@ function joinGame(gameMode,type){
 	}else{
 		showAlerta("Nombre","rojo","<strong>Error!</strong> Tienes que escoger un nombre de usuario");
 	}
-
-		
-
-/*
-	//En ambos casos se creara un Jugador
-	$.ajax({
-        type: "POST",
-        url: "/createPlayer",
-        data:{
-            query: "inicializaWeb"
-        },
-        success: function(data){
-            //Una vez obtenida la info, separamos
-            var arrayData = data.split(":");
-            var IDred = arrayData[0];
-            IDredW = IDred.substring(0,IDred.length-1);
-            inicial = parseInt(arrayData[1]);
-            final = parseInt(arrayData[2]);
-
-            for (var i = inicial; i <= final; i++) {
-                //Agregamos los titulos e imagenes de las screenshoots
-                $("#list-host").append(
-                    '<div class="col-sm-6 col-lg-3">'+
-                        '<div class="text">'+
-                            '<h2>'+IDredW+i+'</h2>'+
-                        '</div>'+
-                        '<img id="host'+IDredW+i+'" src="images/image-not-found.png">'+
-                    '</div>'
-                );
-            }
-
-            //Y cada 5 segundos actualizamos las imagenes
-
-            setInterval('updateScreenshoots("'+IDredW+'","'+inicial+'","'+final+'")',1000);
-
-        }
-    });
-
-
-	switch(gameMode){
-		case 'solo':
-			window.location = 'monopoly.html';
-		break;
-		case 'multiplayer':
-			window.location = 'monopoly.html';
-		break;
-	}
-
-	*/
 }
 
+function updateGame() {
+	console.log(idTablero);
+	if (idTablero != null) {
+		console.log("Peticion de actualizacion, tablero: "+idTablero);
+	}
+}
 
 function getTarjeta(e,color) {
 	e = e || window.event;

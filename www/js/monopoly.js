@@ -7,6 +7,9 @@ $(document).ready(function() {
 	});
 });
 
+function infoCasilla(num) {
+	openModal('TARJETA ROJA','Si caes en esta casilla tienes que tomar una carta color rojo!','ACEPTAR',null,'closeModal();',null)
+}
 
 function updateGame() {
 	console.log(idTablero);

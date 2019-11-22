@@ -14,12 +14,12 @@
 #include "rapidjson/stringbuffer.h"
 
 // Obtiene la cadena JSON del tablero del archivo que lo contiene y retorna el tamaño de la misma.
-unsigned int fetchBoard(char ** jsonBoard);
+unsigned int fetchBoard(char **jsonBoard);
 
 // Actualiza el tablero en el archivo JSON
-void updateBoard(const char * jsonBoard, unsigned int boardSize);
+void saveBoard(const char *jsonBoard, unsigned int boardSize);
 
-// Actualiza el turno del tablero.
-void *updateTurn(char * jsonBoard);
+// Actualiza el tablero con el turno que corresponde.
+unsigned int updateTurn(char **jsonBoard);
 
 #endif

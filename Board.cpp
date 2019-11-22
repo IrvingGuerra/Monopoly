@@ -37,10 +37,10 @@ unsigned int fetchBoard(char **jsonBoard)
     return boardSize;
 }
 
-void updateBoard(const char *jsonBoard, unsigned int boardSize)
+void saveBoard(const char *jsonBoard, unsigned int boardSize)
 {
     // Se abre el archivo.
-    int fd = open("registros.data", O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
+    int fd = open("tablero.json", O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
     if (fd == -1)
     {
         perror("Error al abrir el archivo.\n");
@@ -58,4 +58,32 @@ void updateBoard(const char *jsonBoard, unsigned int boardSize)
 
     // Se cierra el archivo.
     close(fd);
+}
+
+
+unsigned int updateTurn(char **jsonBoard)
+{
+    // Obtiene valores para actualizar.
+    rapidjson::Document root;
+    root.Parse(*jsonBoard);
+    int turno = root["turno"].GetInt();
+    int numJugadores = root["jugadores"].Size();
+    
+    // Actualiza valor de turno de acuerdo a los jugadores.
+    turno = turno == numJugadores ? 1 : turno + 1;
+    root["turno"] = turno;
+
+    // Enlaza con buffer y writer.
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    root.Accept(writer);
+
+    // Reasigna memoria para el json reslutante.
+    unsigned int toReserve = strlen(buffer.GetString()) + 1;
+    *jsonBoard = (char *)realloc(*jsonBoard, toReserve);
+
+    // Guarda nuevo json en misma variable.
+    strcpy (*jsonBoard, buffer.GetString());
+
+    return toReserve;
 }

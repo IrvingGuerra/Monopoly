@@ -1,9 +1,10 @@
 .tablero {
-	background-color: white;
+	background-color: #474747;
 	width: 100vw;
 	height: 100vh;
 	display: flex;
 	flex-direction: row; /*Position relative fluyen como columnas*/
+	overflow: hidden;
 }
 .cambiaFila {
 	display: flex;
@@ -22,14 +23,31 @@
 	text-align: center;
 }
 .salida i{
-	font-size: 60px;
+	margin-top: -10px;
+	font-size: 50px;
 }
 .casilla {
 	height: 20vh;
 	width: 10vw;	
-	/*border: 1px solid black;*/
-	box-shadow: inset 0 0 0 1px black;
-	background-color: #e5f9e0;
+	border-radius: 10px;
+	background-color: white;
+	border: 5px solid #474747;
+	/*box-shadow: inset 0 0 0 1px black;*/
+	/*background-color: #e5f9e0;*/
+	cursor: pointer;
+	-moz-transition: all 0.2s ease-in;
+	-o-transition: all 0.2s ease-in;
+	-webkit-transition: all 0.2s ease-in;
+	transition: all 0.2s ease-in;
+}
+.casilla:hover{
+	border-color: #fdec6e;
+	border: 1px solid #474747;
+	text-shadow:0px 0px 50px #fdec6e;
+	-moz-transition: all 0.2s ease-in;
+	-o-transition: all 0.2s ease-in;
+	-webkit-transition: all 0.2s ease-in;
+	transition: all 0.2s ease-in;
 }
 .player1 {
 	position: absolute;
@@ -84,6 +102,7 @@
 	height: auto;
 }
 .tarjeta{
+	border-radius: 4px;
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -93,21 +112,25 @@
 }
 
 .cartasYDado{
+	border-radius: 10px;
+	border: 5px solid #474747;
 	background-color: #71A8DC;
 	height: 60vh;
 }
 .color_propiedad {
-	width: 100%;
-	height: 20%;
-	border-bottom: 1px solid black;
+	margin-top: 3%;
+	margin-left: 3%;
+	margin-right: 3%;
+	border-radius: 5px;
+	width: 94%;
+	height: 18%;
 }
 .info_propiedad{
 	padding: 10px 10px;
 	width: 100%;
 	height: 80%;
 }
-.titulo {	
-}
+
 .propietario {
 	margin-top: 5px;
 	font-size: 13px;
@@ -116,14 +139,14 @@
 }
 .precio {
 	position: absolute;
-	bottom: 5px;
+	bottom: 7px;
 	font-size: 13px;
 	font-weight: bolder;
 	color: green;
 }
 .numero {
 	position: absolute;
-	bottom: 5px;
+	bottom: 7px;
 	right: 5px;
 	font-size: 13px;
 	font-weight: bolder;
@@ -132,6 +155,7 @@
 .cartasRojas{
 	width: 20vw;
 	height: 20vh;
+	border-radius: 10px;
 	background-color: #C20A0A;
 	display: flex;
 	justify-content: center;
@@ -145,15 +169,16 @@
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%,-50%);
-	width: 70%;
+	width: 50%;
 	opacity: 0.5;
+	transform: translate(-50%,-50%) rotate(-25deg);
 }
 .logo img{
 	width: 100%;
 	height: auto;
 }
 .cartasAzules{
+	border-radius: 10px;
 	width: 20vw;
 	height: 20vh;
 	background-color: #3953BB;
@@ -166,8 +191,14 @@
 }
 
 .cartasAzules.disabled,.cartasRojas.disabled{
-	opacity: 0.8;
+	opacity: 0.9;
 	cursor: no-drop;
+}
+
+.alert{
+	position: absolute !important;
+	left: 10px !important;
+	bottom: 10px !important;
 }
 
 .dado{

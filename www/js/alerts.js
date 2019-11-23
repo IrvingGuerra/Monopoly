@@ -13,7 +13,8 @@ function openModal(title,description,btn1,btn2,fnbtn1,fnbtn2) {
 }
 
 function closeModal() {
-	$('.modal').remove();
+	$('.modal').fadeOut();
+	setTimeout(function () {$('.modal').remove();}, 500);
 }
 //Funciones para alertas pequeñas
 function showAlert(id,color,text) {
@@ -23,7 +24,7 @@ function showAlert(id,color,text) {
 	$('.alert').append('<label>'+text+'</label>');
 	$('.alert').addClass(color);
 	$('.alert').fadeIn();
-	setTimeout(function () {$('.alert').fadeOut();}, 2000)
+	setTimeout(function () {$('.alert').fadeOut();}, 2000);
 }
 function closeAlert(){
 	$('.alert').fadeOut();

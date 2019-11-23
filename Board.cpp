@@ -79,7 +79,7 @@ unsigned int updateTurn(char **jsonBoard)
     root.Accept(writer);
 
     // Reasigna memoria para el json reslutante.
-    unsigned int toReserve = strlen(buffer.GetString()) + 1;
+    unsigned int toReserve = strlen(buffer.GetString());
     *jsonBoard = (char *)realloc(*jsonBoard, toReserve);
 
     // Guarda nuevo json en misma variable.

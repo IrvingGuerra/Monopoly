@@ -1,21 +1,38 @@
 var idTablero = null;
 
 $(document).ready(function() {
-	setInterval('updateGame()',1000);
+	//setInterval('updateGame()',1000);
+	/*
 	$.getJSON('https://api.ipify.org?format=json', function(data){
 	    console.log(data.ip);
 	});
+	*/
 });
 
 function infoCasilla(num) {
 	openModal('TARJETA ROJA','Si caes en esta casilla tienes que tomar una carta color rojo!','ACEPTAR',null,'closeModal();',null)
 }
 
+updateGame();
+
 function updateGame() {
-	console.log(idTablero);
-	if (idTablero != null) {
-		console.log("Peticion de actualizacion, tablero: "+idTablero);
-	}
+
+	//Pediremos el tablero
+	$.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/board",
+        success: function(data){
+        	console.log(data);
+        },
+	    error: function(error) {
+	    	console.log(error.statusText + error.responseText);
+	    }
+    });
+
+
+
+
 }
 
 function getTarjeta(e,color) {
@@ -27,7 +44,6 @@ function getTarjeta(e,color) {
     	
     }
 }
-
 
 var loopVar = 1;  
 var dado = 1;
@@ -73,14 +89,5 @@ function showAlert(color,text) {
 	$('.alert > label').html(text);
 	$('.alert').fadeIn();
 	setTimeout(function () {$('.alert').fadeOut();}, 2000)
-}
-
-function showAlerta(id,color,text) {
-	$('#alerta'+id).removeClass('verde');
-	$('#alerta'+id).removeClass('rojo');
-	$('#alerta'+id).addClass(color);
-	$('#alerta'+id+' > label').html(text);
-	$('#alerta'+id).fadeIn();
-	setTimeout(function () {$('#alerta'+id).fadeOut();}, 2000)
 }
 

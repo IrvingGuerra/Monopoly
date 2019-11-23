@@ -27,6 +27,7 @@ void onPostBoard(struct mg_connection *nc, struct http_message *hm)
     mg_send(nc, reply, replyLen + 1);
 }
 
+/*
 void onGetRedCard(struct mg_connection *nc, struct http_message *hm)
 {
     const char *redCard = rollCards(RED);
@@ -42,3 +43,4 @@ void onGetBlueCard(struct mg_connection *nc, struct http_message *hm)
     mg_send_head(nc, 200, cardSize, "Content-Type: application/json");
     mg_send(nc, blueCard, cardSize);
 }
+*/

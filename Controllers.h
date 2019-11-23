@@ -26,11 +26,11 @@ void onPostBoard(struct mg_connection *nc, struct http_message *hm);
 /**
  * Envia una carta roja del montón y la desplaza al final localmente.
  */
-void onGetRedCard(struct mg_connection *nc, struct http_message *hm);
+//void onGetRedCard(struct mg_connection *nc, struct http_message *hm);
 
 /**
  * Envia una carta azul del montón y la desplaza al final localmente.
  */
-void onGetBlueCard(struct mg_connection *nc, struct http_message *hm);
+//void onGetBlueCard(struct mg_connection *nc, struct http_message *hm);
 
 #endif

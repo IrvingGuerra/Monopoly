@@ -16,7 +16,7 @@ function argsToObject(descripcion) {
     return {
         descripcion: desc,
         dinero: splitDinero.length > 1 ? num * 1000 : 0,
-        turnos: splitTurnos.length > 1 ? turnos : 0
+        turnos: splitTurnos.length > 1 ? turnos : 1
     };
 }
 

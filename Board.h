@@ -17,7 +17,7 @@
 const char * generateBoard(const char *boardid);
 
 // Obtiene el contenido json del archivo con la template del tablero.
-unsigned int fetchTemplate(char **jsonTemplate);
+unsigned int fetchBoardTemplate(char **jsonTemplate);
 
 // Obtiene un tablero en específico.
 unsigned int fetchBoard(char **jsonBoard, const char *filename);

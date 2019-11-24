@@ -56,15 +56,17 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
     // El archivo no existe.
     else
     {
-        // Se genera tablero.
+        // Se genera tablero y cartas.
         const char * jsonboard = generateBoard(boardid);
         rapidjson::Document board;
         board.Parse(jsonboard);
         // Se agrega jugador.
         addPlayer(board, playerName, playerIsBot, playerColor);
         const char * newjsonboard = stringify(board);
-        //  Se guarda tablero y se manda conrifmación para unirse a juego.
+        //  Se guarda tablero y cartas
         saveBoard(newjsonboard, filename);
+        generateCards(boardid);
+        // Se manda conrifmación para unirse a juego.
         sendSuccess(nc);
     }
 }
@@ -95,17 +97,21 @@ void onPostBoard(struct mg_connection *nc, struct http_message *hm)
     sendSuccess(nc);
 }
 
-void onGetRedCard(struct mg_connection *nc, struct http_message *hm)
+void onGetCard(struct mg_connection *nc, struct http_message *hm)
 {
-    const char *redCard = rollCards(RED);
-    unsigned int cardSize = strlen(redCard);
-    mg_send_head(nc, 200, cardSize, "Content-Type: application/json");
-    mg_send(nc, redCard, cardSize);
-}
+    /*
+        Cuerpo de petición:
+        {
+            color: number // 0: blue, 1:red
+            boardid: string
+        }
+    */
+    rapidjson::Document req;
+    req.Parse(hm->body.p);
+    int color = req["color"].GetInt();
+    const char *boardid = req["boardid"].GetString();
 
-void onGetBlueCard(struct mg_connection *nc, struct http_message *hm)
-{
-    const char *blueCard = rollCards(BLUE);
+    const char *blueCard = rollCards(getFileName(color, boardid));
     unsigned int cardSize = strlen(blueCard);
     mg_send_head(nc, 200, cardSize, "Content-Type: application/json");
     mg_send(nc, blueCard, cardSize);

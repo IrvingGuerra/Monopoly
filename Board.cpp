@@ -8,7 +8,7 @@ const char * generateBoard(const char *boardid)
 
     // Obtenemos plantilla de tablero y cambiamos id.
     char *temp;
-    fetchTemplate(&temp);
+    fetchBoardTemplate(&temp);
     rapidjson::Document board;
     board.Parse(temp);
     board["id"].SetString(boardid, strlen(boardid), board.GetAllocator());
@@ -17,7 +17,7 @@ const char * generateBoard(const char *boardid)
     return stringify(board);
 }
 
-unsigned int fetchTemplate(char **jsonBoard)
+unsigned int fetchBoardTemplate(char **jsonBoard)
 {
     return fetchBoard(jsonBoard, "tablero.json");
 }

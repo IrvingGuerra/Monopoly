@@ -1,10 +1,9 @@
 #include "Cards.h"
 
-unsigned int fetchCards(char **jsonCards, int color)
+void fetchCards(char **jsonCards, const char *filename)
 {
     // Se abre el archivo.
-    const char *file = color == BLUE ? "azules.json" : "rojas.json";
-    int fd = open(file, O_RDONLY);
+    int fd = open(filename, O_RDONLY);
     if (fd == -1)
     {
         perror("Error al abrir archivo.");
@@ -34,15 +33,24 @@ unsigned int fetchCards(char **jsonCards, int color)
 
     // Se cierra el archivo.
     close(fd);
-
-    return cardsSize;
 }
 
-void saveCards(const char *jsonCards, unsigned int cardsSize, int color)
+void fetchCardsTemplate(char **jsonCardsTemplate, int color)
 {
-    const char *file = color == BLUE ? "azules.json" : "rojas.json";
+    if (color == BLUE)
+    {
+        fetchCards(jsonCardsTemplate, "azules.json");
+    }
+    else
+    {
+        fetchCards(jsonCardsTemplate, "rojas.json");
+    }
+}
+
+void saveCards(const char *jsonCards, const char *filename)
+{
     // Se abre el archivo.
-    int fd = open(file, O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
+    int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
     if (fd == -1)
     {
         perror("Error al abrir el archivo.\n");
@@ -50,7 +58,7 @@ void saveCards(const char *jsonCards, unsigned int cardsSize, int color)
     }
 
     // Se escribe el archivo.
-    int res = write(fd, jsonCards, cardsSize);
+    int res = write(fd, jsonCards, strlen(jsonCards));
     if (res == -1)
     {
         perror("Error al escribir el archivo.\n");
@@ -62,11 +70,11 @@ void saveCards(const char *jsonCards, unsigned int cardsSize, int color)
     close(fd);
 }
 
-const char *rollCards(int color)
+const char *rollCards(const char *filename)
 {
     // Obtiene JSON.
     char *jsonCards;
-    fetchCards(&jsonCards, color);
+    fetchCards(&jsonCards, filename);
 
     // Lo parsea.
     rapidjson::Document cards;
@@ -75,7 +83,7 @@ const char *rollCards(int color)
     // Preparamos buffer para serializar.
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    
+
     // Se copia primer elemento.
     rapidjson::Value card(cards[0], cards.GetAllocator());
     card.Accept(writer);
@@ -90,7 +98,26 @@ const char *rollCards(int color)
 
     // Se guarda el JSON resultante.
     cards.Accept(writer);
-    saveCards(buffer.GetString(), buffer.GetSize(), color);
+    saveCards(buffer.GetString(), filename);
 
     return strCard;
+}
+
+const char *getFileName(int color, const char *boardid)
+{
+    const char *colorstr = color == BLUE ? "azules.json" : "rojas.json";
+    int buffSize = strlen(colorstr) + strlen(boardid) + 2;
+    char *filename = new char[buffSize];
+    sprintf(filename, "%s_%s", boardid, colorstr);
+    return (const char *)filename;
+}
+
+void generateCards(const char *boardid)
+{
+    char *red;
+    char *blue;
+    fetchCardsTemplate(&red, RED);
+    fetchCardsTemplate(&blue, BLUE);
+    saveCards(red, getFileName(RED, boardid));
+    saveCards(blue, getFileName(BLUE, boardid));
 }

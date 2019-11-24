@@ -33,19 +33,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
 		{
 			if (mg_vcmp(&hm->method, "GET") == 0)
 			{
-				// Se obtiene el color de la carta que se pide.
-				// Se debe obtener una ruta del tipo: /card?color=COLOR
-				// Con COLOR = red | blue.
-				char color[10];
-				strncpy(color, hm->query_string.p + 6, hm->query_string.len - 6);
-				if (strcmp(color, "blue") == 0)
-				{
-					onGetBlueCard(nc, hm);
-				}
-				else if (strcmp(color, "red") == 0)
-				{
-					onGetRedCard(nc, hm);
-				}
+				onGetCard(nc, hm);
 			}
 		}
 		else

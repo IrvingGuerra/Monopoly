@@ -24,14 +24,9 @@ void onGetBoard(struct mg_connection *nc, struct http_message *hm);
 void onPostBoard(struct mg_connection *nc, struct http_message *hm);
 
 /**
- * Envia una carta roja del montón y la desplaza al final localmente.
+ * Envia una carta del montón correspondiente y la desplaza al final localmente.
  */
-void onGetRedCard(struct mg_connection *nc, struct http_message *hm);
-
-/**
- * Envia una carta azul del montón y la desplaza al final localmente.
- */
-void onGetBlueCard(struct mg_connection *nc, struct http_message *hm);
+void onGetCard(struct mg_connection *nc, struct http_message *hm);
 
 /**
  * Se encarga de enviar una respuesta de éxito.

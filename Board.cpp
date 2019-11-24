@@ -91,7 +91,7 @@ void addPlayer(rapidjson::Document &board, const char *name, bool isBot, const c
     player.AddMember("esBot", isBot, board.GetAllocator());
     player.AddMember("casilla", 0, board.GetAllocator());
     player.AddMember("vueltas", 0, board.GetAllocator());
-    player.AddMember("saldo", 40000, board.GetAllocator());
+    player.AddMember("saldo", 100000, board.GetAllocator());
     player.AddMember("turnosEnCastigo", 0, board.GetAllocator());
     rapidjson::Value props;
     props.SetArray();

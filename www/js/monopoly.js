@@ -1,7 +1,7 @@
 var idTablero;
 var username;
 
-var casillas = [{"numero":0,"tipo":"SALIDA","comprada":false,"valor":1000,"propietario":0,"nombre":"SALIDA","color":"FFFFFF"},{"numero":1,"tipo":"PROPIEDAD","comprada":false,"valor":20000,"propietario":0,"nombre":"TORNIQUETES CAFE","color":"8449A3"},{"numero":2,"tipo":"ROJA","comprada":false,"valor":0,"propietario":0,"nombre":"CARTA ROJA","color":"D50E0E"},{"numero":3,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":4,"tipo":"PROPIEDAD","comprada":false,"valor":80000,"propietario":0,"nombre":"CAFETERIA","color":"3953BB"},{"numero":5,"tipo":"PROPIEDAD","comprada":false,"valor":40000,"propietario":0,"nombre":"CAFETERIA SILLAS","color":"3953BB"},{"numero":6,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":7,"tipo":"AZUL","comprada":false,"valor":0,"propietario":0,"nombre":"CARTA AZUL","color":"3953BB"},{"numero":8,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":9,"tipo":"PROPIEDAD","comprada":false,"valor":40000,"propietario":0,"nombre":"BAÑOS MUJERES","color":"D50E0E"},{"numero":10,"tipo":"PROPIEDAD","comprada":false,"valor":40000,"propietario":0,"nombre":"BAÑOS HOMBRES","color":"D50E0E"},{"numero":11,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":12,"tipo":"PROPIEDAD","comprada":false,"valor":60000,"propietario":0,"nombre":"PAPELERIA","color":"27902C"},{"numero":13,"tipo":"CARCEL","comprada":false,"valor":5000,"propietario":0,"nombre":"CARCEL","color":"FFFFFF"},{"numero":14,"tipo":"ROJA","comprada":false,"valor":0,"propietario":0,"nombre":"CARTA ROJA","color":"D50E0E"},{"numero":15,"tipo":"PROPIEDAD","comprada":false,"valor":50000,"propietario":0,"nombre":"CAFETERIA","color":"3953BB"},{"numero":16,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":17,"tipo":"AZUL","comprada":false,"valor":0,"propietario":0,"nombre":"CARTA AZUL","color":"3953BB"},{"numero":18,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":19,"tipo":"PROPIEDAD","comprada":false,"valor":80000,"propietario":0,"nombre":"PAPELERIA IMPRESIONES","color":"27902C"},{"numero":20,"tipo":"PROPIEDAD","comprada":false,"valor":40000,"propietario":0,"nombre":"PAPELERIA COPIAS","color":"27902C"},{"numero":21,"tipo":"ROJA","comprada":false,"valor":0,"propietario":0,"nombre":"CARTA ROJA","color":"D50E0E"},{"numero":22,"tipo":"VACIA","comprada":false,"valor":0,"propietario":0,"nombre":"VACIA","color":"FFFFFF"},{"numero":23,"tipo":"PROPIEDAD","comprada":false,"valor":30000,"propietario":0,"nombre":"BAÑOS SUCIOS","color":"D50E0E"},{"numero":24,"tipo":"AZUL","comprada":false,"valor":0,"propietario":0,"nombre":"CARTA AZUL","color":"3953BB"},{"numero":25,"tipo":"PROPIEDAD","comprada":false,"valor":20000,"propietario":0,"nombre":"TORNIQUETES ESTACIONAMIENTO","color":"8449A3"}];
+var tablero;
 
 $(document).ready(function() {
 	idTablero = getCookie('idTablero');
@@ -28,9 +28,23 @@ function updateGame() {
         dataType: "json",
         url: "/board",
         success: function(data){
+        	console.log(data);
+        	tablero = data;
         	//Reparasemos los jugadores que hay
         	var players = "";
         	var jugadores = data.jugadores;
+        	if ($('.player1').length){
+    			$('.player1').remove();
+    		}
+    		if ($('.player2').length){
+    			$('.player2').remove();
+    		}
+    		if ($('.player3').length){
+    			$('.player3').remove();
+    		}
+    		if ($('.player4').length){
+    			$('.player4').remove();
+    		}
         	for (var i = 0; i < jugadores.length; i++) {
         		players+="<div style='color:"+jugadores[i].color+"'>"+(i+1)+": "+jugadores[i].nombre.toUpperCase()+"</div><br>";
         		$("#casilla"+jugadores[i].casilla).append('<div class="player'+(i+1)+'" style="background:'+jugadores[i].color+'"></div>');
@@ -50,8 +64,9 @@ function updateGame() {
 						$('.dado').removeClass("disabled");
 					}
 				}else{
-					//Le toca a un bot
-
+					//Giramos el dado por el
+					loopVar = 1;
+					//myLoop(); 
 				}
 			}
         },
@@ -100,7 +115,53 @@ function setImageDado() {
 	showAlert("verde","<strong>¡Calculando!</strong> Te toco el numero: "+dado);
 	document.getElementById('dado').src = 'img/dado/'+dado+'.png';
 	if (loopVar == 14) {
-		console.log("acabo");
+		//Movemos al jugador
+		var casillaActual = parseInt(tablero.jugadores[tablero.turno-1].casilla);
+		var casillaNueva = casillaActual + dado;
+		tablero.jugadores[tablero.turno-1].casilla = casillaNueva;
+
+		switch(tablero.casillas[casillaNueva].tipo){
+			case "SALIDA":
+			break;
+			case "PROPIEDAD":
+				if (jugadores[data.turno-1].esBot == false) {
+					if (tablero.casillas[casillaNueva].comprada == false) {
+						openModal('CAISTE EN UNA PROPIEDAD','Deseas comprar la propiedad: '+tablero.casillas[casillaNueva].nombre,'COMPRAR','CANCELAR','comprarPropiedad();','closeModal();');
+					}
+				}else{
+					//El boot cayo en una propiedad
+					//Si es la primera la compramos
+
+				}
+				
+			break;
+			case "ROJA":
+			break;
+			case "AZUL":
+			break;
+			case "CARCEL":
+			break;
+			case "VACIA":
+			break;
+		}
+		//Incrementamos el turno
+		tablero.turno++;
+		if (tablero.turno == 5) {
+			tablero.turno = 1;
+		}
+		//En cualquier caso actualizamos json
+		$.ajax({
+        type: "POST",
+        data:JSON.stringify(tablero),
+        url: "/board",
+        success: function(data){
+        	console.log(data);
+        },
+	    error: function(error) {
+	    	console.log(error.statusText + error.responseText);
+	    }
+    });
+
 	}
 }
 

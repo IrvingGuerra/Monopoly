@@ -14,13 +14,13 @@
 	<!-- El tablero se diseñará con css y js para poder ser full responsive -->
 	<div class="tablero">
 		<div class="col izquierda">
-		    <div class="casilla">
+		    <div class="casilla" id="casilla13">
 					<div class="carcel">
 						<img src="img/jail.jpg">
 						<div class="numero">13</div>
 					</div>
 				</div>
-		    <div class="casilla">
+		    <div class="casilla" id="casilla12">
 		    	<div class="color_propiedad verde"></div>
 		    	<div class="info_propiedad">
 		    		<div class="titulo">PAPELERIA</div>
@@ -29,8 +29,8 @@
 		    		<div class="numero">12</div>
 		    	</div>	
 		    </div>
-		    <div class="casilla"><div class="numero">11</div></div>
-		    <div class="casilla">
+		    <div class="casilla" id="casilla11"><div class="numero">11</div></div>
+		    <div class="casilla" id="casilla10">
 		    	<div class="color_propiedad rojo"></div>
 		    	<div class="info_propiedad">
 		    		<div class="titulo">BAÑOS HOMBRES</div>
@@ -39,7 +39,7 @@
 		    		<div class="numero">10</div>
 		    	</div>	
 		    </div>
-		    <div class="casilla">
+		    <div class="casilla" id="casilla9">
 		    	<div class="color_propiedad rojo"></div>
 		    	<div class="info_propiedad">
 		    		<div class="titulo">BAÑOS MUJERES</div>
@@ -51,13 +51,13 @@
 		</div>
 		<div class="cambiaFila">
 			<div class="fila superior">
-				<div class="casilla" style="background-color: #D50E0E">
+				<div class="casilla" id="casilla14" style="background-color: #D50E0E">
 					<div class="tarjeta rojo">
 						<i class="fa fa-question-circle"></i>
 						<div class="numero">14</div>
 					</div>
 				</div>
-				<div class="casilla">
+				<div class="casilla" id="casilla15">
 					<div class="color_propiedad azulOscuro"></div>
 		    		<div class="info_propiedad">
 			    		<div class="titulo">BARRA DE CAFE</div>
@@ -66,15 +66,15 @@
 			    		<div class="numero">15</div>
 			    	</div>	
 				</div>
-				<div class="casilla"><div class="numero">16</div></div>
-				<div class="casilla" style="background-color: #3953BB">
+				<div class="casilla" id="casilla16"><div class="numero">16</div></div>
+				<div class="casilla" id="casilla17" style="background-color: #3953BB">
 					<div class="tarjeta azul">
 						<i class="fa fa-question-circle"></i>
 						<div class="numero">17</div>
 					</div>
 				</div>
-				<div class="casilla"><div class="numero">18</div></div>
-				<div class="casilla">
+				<div class="casilla" id="casilla18"><div class="numero">18</div></div>
+				<div class="casilla" id="casilla19">
 		    	<div class="color_propiedad verde"></div>
 		    	<div class="info_propiedad">
 		    		<div class="titulo">PAPELERIA IMPRESIONES</div>
@@ -82,16 +82,17 @@
 		    		<div class="precio">PRECIO $200</div>
 		    		<div class="numero">19</div>
 		    	</div>	
-		    </div><div class="casilla">
-		    	<div class="color_propiedad verde"></div>
-		    	<div class="info_propiedad">
+		    </div>
+		    <div class="casilla" id="casilla20">
+			    	<div class="color_propiedad verde"></div>
+			    	<div class="info_propiedad">
 		    		<div class="titulo">PAPELERIA COPIAS</div>
 		    		<div class="propietario">SIN PROPIETARIO</div>
 		    		<div class="precio">PRECIO $200</div>
 		    		<div class="numero">20</div>
 		    	</div>	
 		    </div>
-				<div class="casilla" onclick="infoCasilla(21);" style="background-color: #D50E0E">
+				<div class="casilla" id="casilla21" onclick="infoCasilla(21);" style="background-color: #D50E0E">
 					<div class="tarjeta rojo">
 						<i class="fa fa-question-circle"></i>
 						<div class="numero">21</div>
@@ -108,9 +109,14 @@
 				<div class="cartasAzules disabled" onclick="getTarjeta(event,'azul')">
 					<i class="fa fa-question-circle"></i>
 				</div>
-				<div class="dado">
+				<div class="dado disabled">
 					<img id="dado" src="img/dado/1.png" onclick="randomDado(event)">
 				</div>
+				<div class="turnos">
+					<div class="idTablero"></div>
+					<div class="players"></div>
+				</div>
+				<div class="statusGame"></div>
 				<div class="alert">
 					<span class="closebtn" onclick="$(this.parentElement).fadeOut();">&times;</span>
 					<label><strong>Información!</strong> Descripcion mas mas mas larga xd</label>
@@ -118,15 +124,15 @@
 				<div id="alertas"></div>
 			</div>
 			<div class="fila inferior">
-				<div class="casilla"><div class="numero">8</div></div>
-				<div class="casilla" style="background-color: #3953BB">
+				<div class="casilla" id="casilla8"><div class="numero">8</div></div>
+				<div class="casilla" id="casilla7" style="background-color: #3953BB">
 					<div class="tarjeta azul">
 						<i class="fa fa-question-circle"></i>
 						<div class="numero">7</div>
 					</div>
 				</div>
-				<div class="casilla"><div class="numero">6</div></div>
-				<div class="casilla">
+				<div class="casilla" id="casilla6"><div class="numero">6</div></div>
+				<div class="casilla" id="casilla5">
 					<div class="color_propiedad azulOscuro"></div>
 		    		<div class="info_propiedad">
 			    		<div class="titulo">CAFETERIA SILLAS</div>
@@ -135,7 +141,7 @@
 			    		<div class="numero">5</div>
 			    	</div>	
 				</div>
-				<div class="casilla">
+				<div class="casilla" id="casilla4">
 					<div class="color_propiedad azulOscuro"></div>
 		    		<div class="info_propiedad">
 			    		<div class="titulo">CAFETERIA</div>
@@ -144,14 +150,14 @@
 			    		<div class="numero">4</div>
 			    	</div>	
 				</div>
-				<div class="casilla"><div class="numero">3</div></div>
-				<div class="casilla" style="background-color: #D50E0E">
+				<div class="casilla" id="casilla3"><div class="numero">3</div></div>
+				<div class="casilla" id="casilla2" style="background-color: #D50E0E">
 					<div class="tarjeta rojo">
 						<i class="fa fa-question-circle"></i>
 						<div class="numero">2</div>
 					</div>
 				</div>
-				<div class="casilla">
+				<div class="casilla" id="casilla1">
 					<div class="color_propiedad morado"></div>
 		    		<div class="info_propiedad">
 			    		<div class="titulo">TORNIQUETES CAFE</div>
@@ -163,8 +169,8 @@
 			</div>
 		</div>
 		<div class="col derecha">
-			<div class="casilla"><div class="numero">22</div></div>
-		    <div class="casilla">
+			<div class="casilla" id="casilla22" ><div class="numero">22</div></div>
+		    <div class="casilla" id="casilla23">
 		    	<div class="color_propiedad rojo"></div>
 		    	<div class="info_propiedad">
 		    		<div class="titulo">BAÑOS SUCIOS</div>
@@ -173,13 +179,13 @@
 		    		<div class="numero">23</div>
 		    	</div>	
 		    </div>
-		    <div class="casilla" style="background-color: #3953BB">
+		    <div class="casilla" id="casilla24" style="background-color: #3953BB">
 					<div class="tarjeta azul">
 						<i class="fa fa-question-circle"></i>
 						<div class="numero">24</div>
 					</div>
 				</div>
-		    <div class="casilla">
+		    <div class="casilla" id="casilla25">
 		    	<div class="color_propiedad morado"></div>
 		    	<div class="info_propiedad">
 		    		<div class="titulo">TORNIQUETES ESTACIONAMIENTO</div>
@@ -188,20 +194,17 @@
 		    		<div class="numero">25</div>
 		    	</div>	
 		    </div>
-		    <div class="casilla">
+		    <div class="casilla" id="casilla0">
 		    	<div class="salida">
 		    		<strong>SALIDA</strong><br>Cobra $1000 cada vez que pases por aqui!
 		    		<br><i class="fa fa-long-arrow-left"></i>
 		    	</div>
-		    	<div class="player1"></div>
-		    	<div class="player2"></div>
-		    	<div class="player3"></div>
-		    	<div class="player4"></div>
 		    </div>
 		</div>
 	</div>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="js/cookies.js"></script>
 	<script src="js/alerts.js"></script>
 	<script src="js/monopoly.js"></script>  <!--Monopoly js -->
 </body>

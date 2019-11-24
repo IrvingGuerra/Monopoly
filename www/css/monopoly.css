@@ -220,3 +220,40 @@
 	height: auto;
 }
 
+.turnos{
+	position: absolute;
+	height: 55%;
+	width: 20vw;
+	background-color:rgb(255,0,0,0.4);
+	border-radius: 10px;
+	right: 5px;
+	bottom: 5px;
+	text-align: center;
+}
+
+.idTablero{
+	margin: 10px 10px;
+	font-family: Splatch;
+}
+.players{
+	line-height: 18px;
+	font-family: Splatch;
+	font-size: 12px;
+}
+
+.statusGame{
+	position: absolute;
+	background-color:rgb(0,0,0,0.9);
+	border-radius: 10px;
+	text-align: center;
+	top: 10px;
+	left: 50%;
+	width: 40%;
+	height: 20%;
+	transform: translateX(-50%);
+	font-family: Splatch;
+	color: white;
+	font-size: 20px;
+	padding-top: 15px;
+	display: none;
+}

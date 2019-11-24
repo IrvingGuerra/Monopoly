@@ -1,5 +1,12 @@
 #include "Controllers.h"
 
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/pointer.h"
+#include "rapidjson/stringbuffer.h"
+
+using namespace rapidjson;
+
 void onGetGame(struct mg_connection *nc, struct http_message *hm)
 {
     /*
@@ -11,72 +18,77 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
         playerColor: string
     }
     */
-    rapidjson::Document req;
+
+    Document req;
     req.Parse(hm->body.p);
-    const char *boardid = req["boardId"].GetString();
-    const char *playerName = req["playerName"].GetString();
-    bool playerIsBot = req["playerIsBot"].GetBool();
-    const char *playerColor = req["playerColor"].GetString();
+    if (req.IsObject()){
+        const char *boardid = req["boardId"].GetString();
+        const char *playerName = req["playerName"].GetString();
+        bool playerIsBot = req["playerIsBot"].GetBool();
+        const char *playerColor = req["playerColor"].GetString();
 
-    // Obtenemos el nombre del archivo donde se guarda el documento.
-    char *filename = new char[strlen(boardid) + 6];
-    sprintf(filename, "%s.json", boardid);
+        // Obtenemos el nombre del archivo donde se guarda el documento.
+        char *filename = new char[strlen(boardid) + 6];
+        sprintf(filename, "%s.json", boardid);
 
-    // Verificamos que exista el archivo
-    if (access(filename, F_OK) != -1)
-    {
-        // Obtenemos y traducimos contenido de archivo.
-        char *jsonboard;
-        fetchBoard(&jsonboard, filename);
-        rapidjson::Document board;
-        board.Parse(jsonboard);
-
-        // Si el jugador no existe y se puede unir, se une.
-        if (!findPlayer(board, playerName))
+        // Verificamos que exista el archivo
+        if (access(filename, F_OK) != -1)
         {
-            // Se manda mensaje de error en caso de que ya no se pueda unir.
-            if (board["jugadores"].Size() == 4)
+            // Obtenemos y traducimos contenido de archivo.
+            char *jsonboard;
+            fetchBoard(&jsonboard, filename);
+            rapidjson::Document board;
+            board.Parse(jsonboard);
+
+            // Si el jugador no existe y se puede unir, se une.
+            if (!findPlayer(board, playerName))
             {
-                sendError(nc);
+                // Se manda mensaje de error en caso de que ya no se pueda unir.
+                if (board["jugadores"].Size() == 4)
+                {
+                    sendError(nc);
+                }
+                else
+                {
+                    // Se agrega jugador al archivo.
+                    addPlayer(board, playerName, playerIsBot, playerColor);
+                    board["enCurso"] = true; // Para este punto ya deberían haber al menos 2 jugadores.
+                    saveBoard(stringify(board), filename);
+                    sendSuccess(nc);
+                }
             }
             else
             {
-                // Se agrega jugador al archivo.
-                addPlayer(board, playerName, playerIsBot, playerColor);
-                board["enCurso"] = true; // Para este punto ya deberían haber al menos 2 jugadores.
-                saveBoard(stringify(board), filename);
                 sendSuccess(nc);
             }
         }
+        // El archivo no existe.
         else
         {
+            // Se genera tablero y cartas.
+            const char * jsonboard = generateBoard(boardid);
+            rapidjson::Document board;
+            board.Parse(jsonboard);
+            // Se agrega jugador.
+            addPlayer(board, playerName, playerIsBot, playerColor);
+            const char * newjsonboard = stringify(board);
+            //  Se guarda tablero y cartas
+            saveBoard(newjsonboard, filename);
+            generateCards(boardid);
+            // Se manda conrifmación para unirse a juego.
             sendSuccess(nc);
         }
-    }
-    // El archivo no existe.
-    else
-    {
-        // Se genera tablero y cartas.
-        const char * jsonboard = generateBoard(boardid);
-        rapidjson::Document board;
-        board.Parse(jsonboard);
-        // Se agrega jugador.
-        addPlayer(board, playerName, playerIsBot, playerColor);
-        const char * newjsonboard = stringify(board);
-        //  Se guarda tablero y cartas
-        saveBoard(newjsonboard, filename);
-        generateCards(boardid);
-        // Se manda conrifmación para unirse a juego.
-        sendSuccess(nc);
+    }else{
+        sendError(nc);
     }
 }
 
 void onGetBoard(struct mg_connection *nc, struct http_message *hm)
 {
     // Recibe una petición cuyo cuerpo es el id del tablero que pide.
-    char *filename = new char[hm->body.len + 6];
-    sprintf(filename, "%s.json", hm->body.p);
-
+    char *filename = new char[hm->query_string.len + 6];
+    mg_get_http_var(&hm->query_string, "boardId", filename,sizeof(filename));
+    sprintf(filename, "%s.json", filename);
     // Obtiene el archivo correspondiente.
     char *jsonBoard;
     unsigned int boardBytes = fetchBoard(&jsonBoard, filename);

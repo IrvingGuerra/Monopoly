@@ -37,14 +37,14 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
 				// Se debe obtener una ruta del tipo: /card?color=COLOR
 				// Con COLOR = red | blue.
 				char color[10];
-				strcpy(color, hm->query_string.p + 6);
+				strncpy(color, hm->query_string.p + 6, hm->query_string.len - 6);
 				if (strcmp(color, "blue") == 0)
 				{
-					//onGetBlueCard(nc, hm);
+					onGetBlueCard(nc, hm);
 				}
 				else if (strcmp(color, "red") == 0)
 				{
-					//onGetRedCard(nc, hm);
+					onGetRedCard(nc, hm);
 				}
 			}
 		}

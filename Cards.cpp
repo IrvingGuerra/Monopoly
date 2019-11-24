@@ -66,7 +66,7 @@ const char *rollCards(int color)
 {
     // Obtiene JSON.
     char *jsonCards;
-    unsigned int cardsSize = fetchCards(&jsonCards, color);
+    fetchCards(&jsonCards, color);
 
     // Lo parsea.
     rapidjson::Document cards;
@@ -75,10 +75,10 @@ const char *rollCards(int color)
     // Preparamos buffer para serializar.
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-
+    
     // Se copia primer elemento.
     rapidjson::Value card(cards[0], cards.GetAllocator());
-    card.Accept(buffer);
+    card.Accept(writer);
 
     // Se guarda json para retornar.
     char *strCard = new char[buffer.GetSize()];

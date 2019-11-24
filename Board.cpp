@@ -1,9 +1,31 @@
 #include "Board.h"
 
-unsigned int fetchBoard(char **jsonBoard)
+const char * generateBoard(const char *boardid)
+{
+    // Creamos el nombre del archivo.
+    char *filename = new char[strlen(boardid) + 6];
+    sprintf(filename, "%s.json", boardid);
+
+    // Obtenemos plantilla de tablero y cambiamos id.
+    char *temp;
+    fetchTemplate(&temp);
+    rapidjson::Document board;
+    board.Parse(temp);
+    board["id"].SetString(boardid, strlen(boardid), board.GetAllocator());
+
+    // Encadenamos el nuevo tablero.
+    return stringify(board);
+}
+
+unsigned int fetchTemplate(char **jsonBoard)
+{
+    return fetchBoard(jsonBoard, "tablero.json");
+}
+
+unsigned int fetchBoard(char **jsonBoard, const char *filename)
 {
     // Se abre el archivo.
-    int fd = open("tablero.json", O_RDONLY);
+    int fd = open(filename, O_RDONLY);
     if (fd == -1)
     {
         perror("Error al abrir archivo.");
@@ -37,10 +59,10 @@ unsigned int fetchBoard(char **jsonBoard)
     return boardSize;
 }
 
-void saveBoard(const char *jsonBoard, unsigned int boardSize)
+void saveBoard(const char *jsonBoard, const char *filename)
 {
     // Se abre el archivo.
-    int fd = open("tablero.json", O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
+    int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
     if (fd == -1)
     {
         perror("Error al abrir el archivo.\n");
@@ -48,7 +70,7 @@ void saveBoard(const char *jsonBoard, unsigned int boardSize)
     }
 
     // Se escribe el archivo.
-    int res = write(fd, jsonBoard, boardSize);
+    int res = write(fd, jsonBoard, strlen(jsonBoard));
     if (res == -1)
     {
         perror("Error al escribir el archivo.\n");
@@ -60,30 +82,69 @@ void saveBoard(const char *jsonBoard, unsigned int boardSize)
     close(fd);
 }
 
-
-unsigned int updateTurn(char **jsonBoard)
+void addPlayer(rapidjson::Document &board, const char *name, bool isBot, const char *color)
 {
-    // Obtiene valores para actualizar.
-    rapidjson::Document root;
-    root.Parse(*jsonBoard);
-    int turno = root["turno"].GetInt();
-    int numJugadores = root["jugadores"].Size();
-    
-    // Actualiza valor de turno de acuerdo a los jugadores.
-    turno = turno == numJugadores ? 1 : turno + 1;
-    root["turno"] = turno;
+    rapidjson::Value player;
+    player.SetObject();
+    player.AddMember("nombre", rapidjson::GenericStringRef<char>(name), board.GetAllocator());
+    player.AddMember("color", rapidjson::GenericStringRef<char>(color), board.GetAllocator());
+    player.AddMember("esBot", isBot, board.GetAllocator());
+    player.AddMember("casilla", 0, board.GetAllocator());
+    player.AddMember("vueltas", 0, board.GetAllocator());
+    player.AddMember("saldo", 40000, board.GetAllocator());
+    player.AddMember("turnosEnCastigo", 0, board.GetAllocator());
+    rapidjson::Value props;
+    props.SetArray();
+    player.AddMember("propiedades", props, board.GetAllocator());
+    board["jugadores"].PushBack(player, board.GetAllocator());
+}
 
-    // Enlaza con buffer y writer.
+bool findPlayer(rapidjson::Document &board, const char *name)
+{
+    bool playerExists = false;
+    for (register unsigned int i = 0; i < board["jugadores"].Size(); i++)
+    {
+        if (strcmp(board["jugadores"][i]["nombre"].GetString(), name) == 0)
+        {
+            playerExists = true;
+            break;
+        }
+    }
+
+    return playerExists;
+}
+
+const char * stringify(rapidjson::Document &board)
+{
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    root.Accept(writer);
-
-    // Reasigna memoria para el json reslutante.
-    unsigned int toReserve = strlen(buffer.GetString());
-    *jsonBoard = (char *)realloc(*jsonBoard, toReserve);
-
-    // Guarda nuevo json en misma variable.
-    strcpy (*jsonBoard, buffer.GetString());
-
-    return toReserve;
+    board.Accept(writer);
+    return buffer.GetString();
 }
+
+// unsigned int updateTurn(char **jsonBoard)
+// {
+//     // Obtiene valores para actualizar.
+//     rapidjson::Document root;
+//     root.Parse(*jsonBoard);
+//     int turno = root["turno"].GetInt();
+//     int numJugadores = root["jugadores"].Size();
+
+//     // Actualiza valor de turno de acuerdo a los jugadores.
+//     turno = turno == numJugadores ? 1 : turno + 1;
+//     root["turno"] = turno;
+
+//     // Enlaza con buffer y writer.
+//     rapidjson::StringBuffer buffer;
+//     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+//     root.Accept(writer);
+
+//     // Reasigna memoria para el json reslutante.
+//     unsigned int toReserve = strlen(buffer.GetString());
+//     *jsonBoard = (char *)realloc(*jsonBoard, toReserve);
+
+//     // Guarda nuevo json en misma variable.
+//     strcpy (*jsonBoard, buffer.GetString());
+
+//     return toReserve;
+// }

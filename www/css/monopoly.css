@@ -162,7 +162,7 @@
 	align-items: center;
 	font-size: 80px;
 	margin: 10px 10px;
-	cursor: pointer;
+	padding: 10px 15px;
 }
 
 .logo{
@@ -187,12 +187,7 @@
 	align-items: center;
 	font-size: 80px;
 	margin: 10px 10px;
-	cursor: pointer;
-}
-
-.cartasAzules.disabled,.cartasRojas.disabled{
-	opacity: 0.9;
-	cursor: no-drop;
+	padding: 10px 15px;
 }
 
 #alertas{
@@ -257,11 +252,12 @@
 	top: 10px;
 	left: 50%;
 	width: 40%;
-	height: 20%;
+	display: table;
 	transform: translateX(-50%);
 	font-family: Splatch;
 	color: white;
 	font-size: 20px;
 	padding-top: 15px;
 	display: none;
+	padding-bottom: 15px;
 }

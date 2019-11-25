@@ -78,19 +78,20 @@ const char *rollCards(const char *filename)
     char *jsonCards;
     unsigned int clen = fetchCards(&jsonCards, filename);
     
+    std::string jsonCartas(jsonCards, clen);
+
     // Lo parsea.
     rapidjson::Document root;
-    root.Parse(jsonCards);
+    root.Parse(jsonCartas.c_str());
 
     // Preparamos buffer para serializar.
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
 
-    printf("%s\n", buffer.GetString());
-
     // Se copia primer elemento.
     rapidjson::Value card(root["cards"][0], root.GetAllocator());
     card.Accept(writer);
+
 
     // Se guarda json para retornar.
     char *strCard = new char[buffer.GetSize()];

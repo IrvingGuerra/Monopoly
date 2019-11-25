@@ -13,73 +13,85 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
         playerColor: string
     }
     */
-
+    //Opcion 1: con Json, pero falla
+    /*
     std::string body(hm->body.p, hm->body.len);
     Document req;
     req.Parse(body.c_str());
-    if (req.IsObject())
+    const char *boardid = req["boardId"].GetString();
+    const char *playerName = req["playerName"].GetString();
+    bool playerIsBot = req["playerIsBot"].GetBool();
+    const char *playerColor = req["playerColor"].GetString();
+    */
+    //Opcion 2
+    char boardid[10];
+    char playerName[20];
+    char booleano[10];
+    char playerColor[10];
+    bool playerIsBot = false;
+
+    mg_get_http_var(&hm->body, "boardId", boardid,sizeof(boardid));
+    mg_get_http_var(&hm->body, "playerName", playerName,sizeof(playerName));
+    mg_get_http_var(&hm->body, "playerIsBot", booleano,sizeof(booleano));
+    mg_get_http_var(&hm->body, "playerColor", playerColor,sizeof(playerColor));
+
+    if (strcmp ("true", booleano) == 0) {
+        playerIsBot = true;
+    }
+
+    // Obtenemos el nombre del archivo donde se guarda el documento.
+    char *filename = new char[strlen(boardid) + 6];
+    sprintf(filename, "%s.json", boardid);
+
+    printf("%s\n", filename);
+
+    // Verificamos que exista el archivo
+    if (access(filename, F_OK) != -1)
     {
-        const char *boardid = req["boardId"].GetString();
-        const char *playerName = req["playerName"].GetString();
-        bool playerIsBot = req["playerIsBot"].GetBool();
-        const char *playerColor = req["playerColor"].GetString();
+        // Obtenemos y traducimos contenido de archivo.
+        char *jsonboard;
+        fetchBoard(&jsonboard, filename);
+        rapidjson::Document board;
+        board.Parse(jsonboard);
 
-        // Obtenemos el nombre del archivo donde se guarda el documento.
-        char *filename = new char[strlen(boardid) + 6];
-        sprintf(filename, "%s.json", boardid);
-
-        // Verificamos que exista el archivo
-        if (access(filename, F_OK) != -1)
+        // Si el jugador no existe y se puede unir, se une.
+        if (!findPlayer(board, playerName))
         {
-            // Obtenemos y traducimos contenido de archivo.
-            char *jsonboard;
-            fetchBoard(&jsonboard, filename);
-            rapidjson::Document board;
-            board.Parse(jsonboard);
-
-            // Si el jugador no existe y se puede unir, se une.
-            if (!findPlayer(board, playerName))
+            // Se manda mensaje de error en caso de que ya no se pueda unir.
+            if (board["jugadores"].Size() == 4)
             {
-                // Se manda mensaje de error en caso de que ya no se pueda unir.
-                if (board["jugadores"].Size() == 4)
-                {
-                    sendError(nc);
-                }
-                else
-                {
-                    // Se agrega jugador al archivo.
-                    addPlayer(board, playerName, playerIsBot, playerColor);
-                    board["enCurso"] = true; // Para este punto ya deberían haber al menos 2 jugadores.
-                    const char * newBoard = stringify(board);
-                    saveBoard(newBoard, filename);
-                    sendSuccess(nc);
-                }
+                sendError(nc);
             }
             else
             {
+                // Se agrega jugador al archivo.
+                addPlayer(board, playerName, playerIsBot, playerColor);
+                board["enCurso"] = true; // Para este punto ya deberían haber al menos 2 jugadores.
+                const char * newBoard = stringify(board);
+                saveBoard(newBoard, filename);
                 sendSuccess(nc);
             }
         }
-        // El archivo no existe.
         else
         {
-            // Se genera tablero y cartas.
-            const char *jsonboard = generateBoard(boardid);
-            rapidjson::Document board;
-            board.Parse(jsonboard);
-            // Se agrega jugador.
-            addPlayer(board, playerName, playerIsBot, playerColor);
-            const char *newjsonboard = stringify(board);
-            //  Se guarda tablero y cartas
-            saveBoard(newjsonboard, filename);
-            generateCards(boardid);
-            // Se manda conrifmación para unirse a juego.
             sendSuccess(nc);
         }
     }
+    // El archivo no existe.
     else
     {
-        sendError(nc);
+        // Se genera tablero y cartas.
+        const char *jsonboard = generateBoard(boardid);
+        rapidjson::Document board;
+        board.Parse(jsonboard);
+        // Se agrega jugador.
+        addPlayer(board, playerName, playerIsBot, playerColor);
+        const char *newjsonboard = stringify(board);
+        //  Se guarda tablero y cartas
+        saveBoard(newjsonboard, filename);
+        generateCards(boardid);
+        // Se manda conrifmación para unirse a juego.
+        sendSuccess(nc);
     }
 }
 
@@ -98,12 +110,13 @@ void onGetBoard(struct mg_connection *nc, struct http_message *hm)
 
 void onPostBoard(struct mg_connection *nc, struct http_message *hm)
 {
-    const char *jsonBoard = hm->body.p;
+
+    std::string jsonTablero(hm->body.p, hm->body.len);
     rapidjson::Document board;
-    board.Parse(jsonBoard);
+    board.Parse(jsonTablero.c_str());
     char *filename = new char[board["id"].GetStringLength() + 6];
     sprintf(filename, "%s.json", board["id"].GetString());
-    saveBoard(jsonBoard, filename);
+    saveBoard(jsonTablero.c_str(), filename);
 
     // Se envía confirmación
     sendSuccess(nc);
@@ -118,11 +131,28 @@ void onGetCard(struct mg_connection *nc, struct http_message *hm)
             boardId: string
         }
     */
+    //Opcion 1. Con RapidJson
+    /*
     std::string reqbody(hm->body.p, hm->body.len);
     Document req;
+    printf("%s\n", reqbody.c_str());
     req.Parse(reqbody.c_str());
     int color = req["color"].GetInt();
     const char *boardid = req["boardId"].GetString();
+    */
+    //Opcion 2
+    char colorChar[10];
+    char boardid[10];
+    int color = 0;
+
+    mg_get_http_var(&hm->body, "color", colorChar,sizeof(colorChar));
+    mg_get_http_var(&hm->body, "boardId", boardid,sizeof(boardid));
+
+    if (strcmp ("1", colorChar) == 0) {
+        color = 1;
+    }
+
+    printf("%s\n", getFileName(color, boardid));
 
     const char *blueCard = rollCards(getFileName(color, boardid));
     unsigned int cardSize = strlen(blueCard);

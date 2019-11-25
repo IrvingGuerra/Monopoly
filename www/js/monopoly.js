@@ -1,10 +1,9 @@
 var idTablero;
 var username;
-
 var tablero;
-
-var casillaActual;
 var casillaNueva;
+var time = 1;  
+var dado = 1;
 
 $(document).ready(function() {
 	idTablero = getCookie('idTablero');
@@ -71,6 +70,8 @@ function updateGame() {
 						if (tablero.jugadores[tablero.turno-1].esBot == false) {
 							if (tablero.jugadores[tablero.turno-1].nombre == username) {
 								$('.dado').removeClass("disabled");
+							}else{
+								$('.dado').addClass("disabled");
 							}
 						}else{
 							//Es turno de un boot. Esperemos un segundo
@@ -89,8 +90,7 @@ function updateGame() {
 
 function moverJugador() {
 	//Movemos al jugador
-	casillaActual = tablero.jugadores[tablero.turno-1].casilla;
-	casillaNueva = casillaActual + dado;
+	casillaNueva = tablero.jugadores[tablero.turno-1].casilla + dado;
 	if (casillaNueva>25) { //Si llega a 26
 		//Dio una vuelta
 		casillaNueva = casillaNueva - 26;
@@ -108,7 +108,6 @@ function moverJugador() {
 		case "PROPIEDAD":
 			if (tablero.jugadores[tablero.turno-1].esBot == false) {
 				if (tablero.casillas[casillaNueva].comprada == false) {
-					time = 2;
 					openModal('CAISTE EN UNA PROPIEDAD','Deseas comprar la propiedad: '+tablero.casillas[casillaNueva].nombre,'COMPRAR','CANCELAR','comprarPropiedad();','cancel();');
 				}else{
 					if (tablero.casillas[casillaNueva].propietario != tablero.jugadores[tablero.turno-1].nombre) {
@@ -159,9 +158,9 @@ function moverJugador() {
 							}
 						}
 					}
+					updateJsonTablero();
 				}
 			}
-			updateJsonTablero();
 		break;
 		case "ROJA":
 			$.ajax({
@@ -176,7 +175,6 @@ function moverJugador() {
 		        	$(".cartasRojas").css("font-size","20px");
 		        	$('.cartasRojas').html(data.descripcion);
 		        	//Mostramos la info solamente 4 segundos
-		        	time = 2;
 		        	setTimeout(function(){ 
 		        		$(".cartasRojas").css("font-size","80px");
 		        		$('.cartasRojas').html('<i class="fa fa-question-circle"></i>');
@@ -184,7 +182,6 @@ function moverJugador() {
 						tablero.jugadores[tablero.turno-1].saldo-=data.dinero;
 						tablero.jugadores[tablero.turno-1].turnosEnCastigo = data.turnos;
 						updateJsonTablero();
-						time = 1;
 		        	}, 5000);
 					
 		        },
@@ -205,14 +202,12 @@ function moverJugador() {
 		        success: function(data){
 		        	$(".cartasAzules").css("font-size","20px");
 		        	$('.cartasAzules').html(data.descripcion);
-		        	time = 2;
 		        	setTimeout(function(){ 
 						$(".cartasAzules").css("font-size","80px");
 		        		$('.cartasAzules').html('<i class="fa fa-question-circle"></i>');
 			        	tablero.banco-=data.dinero;
 						tablero.jugadores[tablero.turno-1].saldo+=data.dinero;
 						updateJsonTablero();
-						time = 1;
 					}, 5000);
 		        },
 			    error: function(error) {
@@ -235,7 +230,6 @@ function moverJugador() {
 
 function comprarPropiedad() {
 	//Verificamos si nos alcanza
-	time = 1;
 	closeModal();
 	if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor) {
 		//Si se puede comprar
@@ -257,7 +251,6 @@ function comprarPropiedad() {
 }
 
 function cancel() {
-	time = 1;
 	closeModal();
 	updateJsonTablero();
 }
@@ -274,6 +267,7 @@ function updateJsonTablero() {
         url: "/board",
         success: function(data){
         	console.log(data);
+        	time = 1;
         },
 	    error: function(error) {
 	    	console.log(error.statusText + error.responseText);
@@ -282,8 +276,6 @@ function updateJsonTablero() {
 }
 
 
-var time = 1;  
-var dado = 1;
 
 function randomDado(e) {
 	e = e || window.event;
@@ -297,17 +289,16 @@ function randomDado(e) {
 
 function animacionDado() {
 	var interval = setInterval(function() { 
-		if (time <= 10) { 
+		if (time <= 15) { 
 			setImageDado();
 			time++;
 		}
 		else { 
 		  	showAlert("DADO","verde","<strong>¡LISTO!</strong> El dado cayo en el numero: "+dado);
 		  	clearInterval(interval);
-		  	time = 1;
 		  	moverJugador();
 		}
-	}, 400);
+	}, 200);
 }
 
 function setImageDado() {

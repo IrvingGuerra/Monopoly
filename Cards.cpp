@@ -76,7 +76,6 @@ const char *rollCards(const char *filename)
     char *jsonCards;
     fetchCards(&jsonCards, filename);
 
-    
     // Lo parsea.
     rapidjson::Document cards;
     cards.Parse(jsonCards);
@@ -84,6 +83,8 @@ const char *rollCards(const char *filename)
     // Preparamos buffer para serializar.
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+
+    printf("%s\n", buffer.GetString());
 
     // Se copia primer elemento.
     rapidjson::Value card(cards[0], cards.GetAllocator());

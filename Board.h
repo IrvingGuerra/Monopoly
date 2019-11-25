@@ -12,6 +12,7 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/pointer.h"
 #include "rapidjson/stringbuffer.h"
+#include "rapidjson/error/en.h"
 
 // Crea un tablero con el id de tablero especificado.
 const char * generateBoard(const char *boardid);

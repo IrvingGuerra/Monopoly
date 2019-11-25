@@ -119,7 +119,6 @@ void onGetCard(struct mg_connection *nc, struct http_message *hm)
             boardId: string
         }
     */
-    printf("%s\n", hm->body.p);
     Document req;
     req.Parse(hm->body.p);
     int color = req["color"].GetInt();

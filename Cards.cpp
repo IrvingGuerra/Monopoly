@@ -86,6 +86,8 @@ const char *rollCards(const char *filename)
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
 
+    printf("%s\n", buffer.GetString());
+
     // Se copia primer elemento.
     rapidjson::Value card(root["cards"][0], root.GetAllocator());
     card.Accept(writer);

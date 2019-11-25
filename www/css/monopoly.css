@@ -195,6 +195,14 @@
 	cursor: no-drop;
 }
 
+#alertas{
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	width: 550px;
+	height: 20px;
+}
+
 .alert{
 	position: absolute !important;
 	left: 10px !important;

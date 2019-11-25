@@ -76,6 +76,7 @@ const char *rollCards(const char *filename)
     char *jsonCards;
     fetchCards(&jsonCards, filename);
 
+    
     // Lo parsea.
     rapidjson::Document cards;
     cards.Parse(jsonCards);

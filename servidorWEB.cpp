@@ -31,10 +31,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p)
 		}
 		else if (mg_vcmp(&hm->uri, "/card") == 0)
 		{
-			if (mg_vcmp(&hm->method, "GET") == 0)
-			{
-				onGetCard(nc, hm);
-			}
+			onGetCard(nc, hm);
 		}
 		else
 		{

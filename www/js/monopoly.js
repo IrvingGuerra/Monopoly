@@ -3,6 +3,9 @@ var username;
 
 var tablero;
 
+var casillaActual;
+var casillaNueva;
+
 $(document).ready(function() {
 	idTablero = getCookie('idTablero');
 	username = getCookie('username');
@@ -28,8 +31,17 @@ function updateGame() {
         dataType: "json",
         url: "/board",
         success: function(data){
-        	console.log(data);
+        	//console.log(data);
         	tablero = data;
+        	//Actualizamos los precios y propietarios de las casillas
+        	for (var i = 0; i < tablero.casillas.length; i++){
+        		if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == true){
+        			$("#casilla"+i+"  > .info_propiedad > .propietario").html(tablero.casillas[i].propietario);
+        			$("#casilla"+i+"  > .info_propiedad > .precio").html("RENTA $"+tablero.casillas[i].valor);
+        		}
+        		
+        	}
+
         	//Reparasemos los jugadores que hay
         	var players = "";
         	var jugadores = data.jugadores;
@@ -46,7 +58,7 @@ function updateGame() {
     			$('.player4').remove();
     		}
         	for (var i = 0; i < jugadores.length; i++) {
-        		players+="<div style='color:"+jugadores[i].color+"'>"+(i+1)+": "+jugadores[i].nombre.toUpperCase()+"</div><br>";
+        		players+="<div style='color:"+jugadores[i].color+"'>"+(i+1)+": "+jugadores[i].nombre.toUpperCase()+"<span style='color:black'> - $"+jugadores[i].saldo+"</span></div><br>";
         		$("#casilla"+jugadores[i].casilla).append('<div class="player'+(i+1)+'" style="background:'+jugadores[i].color+'"></div>');
         	}
 			$('.players').html(players);
@@ -64,9 +76,8 @@ function updateGame() {
 						$('.dado').removeClass("disabled");
 					}
 				}else{
-					//Giramos el dado por el
-					loopVar = 1;
-					//myLoop(); 
+					//Es turno de un boot. Esperemos un segundo
+					setTimeout(turnoBot(), 2000);
 				}
 			}
         },
@@ -76,11 +87,159 @@ function updateGame() {
     });
 }
 
+function turnoBot() {
+	loopVar = 1;
+	myLoop(); 
+}
+
+function setImageDado() {
+	dado = getRandomNum(1, 6);
+	document.getElementById('dado').src = 'img/dado/'+dado+'.png';
+	if (loopVar == 14) {
+		dado = 2;
+		showAlert("DADO","verde","<strong>¡LISTO!</strong> El dado cayo en el numero: "+dado);
+		//Movemos al jugador
+		casillaActual = tablero.jugadores[tablero.turno-1].casilla;
+		casillaNueva = casillaActual + dado;
+		if (casillaNueva>25) { //Si llega a 26
+			//Dio una vuelta
+			casillaNueva = casillaNueva - 26;
+			tablero.banco-=1000;
+			tablero.jugadores[tablero.turno-1].saldo+=1000;
+			tablero.jugadores[tablero.turno-1].vueltas++;
+			updateJsonTablero();
+		}
+
+		switch(tablero.casillas[casillaNueva].tipo){
+			case "SALIDA":
+				tablero.banco-=1000;
+				tablero.jugadores[tablero.turno-1].saldo+=1000;
+				updateJsonTablero();
+			break;
+			case "PROPIEDAD":
+				if (tablero.jugadores[tablero.turno-1].esBot == false) {
+					if (tablero.casillas[casillaNueva].comprada == false) {
+						openModal('CAISTE EN UNA PROPIEDAD','Deseas comprar la propiedad: '+tablero.casillas[casillaNueva].nombre,'COMPRAR','CANCELAR','comprarPropiedad();','cancel();');
+					}
+				}else{
+					//El boot cayo en una propiedad
+					if (tablero.jugadores[tablero.turno-1].propiedades.length == 0) {
+						//La comprará si es la primera que cae y si le alcanza
+						if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor){
+							comprarPropiedad();
+						}
+					}else{
+						//La inteligencia esta en comprar casas del mismo color
+						var colores = [];
+						for (var i = 0; i < tablero.jugadores[tablero.turno-1].propiedades.length; i++) {
+							colores.push(tablero.jugadores[tablero.turno-1].propiedades[i].color);
+						}
+						//Verificamos que el array colores contenga al menos la nueva propiedad donde callo
+						if (colores.includes(tablero.casillas[casillaNueva].color)) {
+							if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor){
+								comprarPropiedad();
+							}
+						}
+					}
+				}
+				
+			break;
+			case "ROJA":
+				//Pediremos carta roja al back
+				$.ajax({
+			        type: "POST",
+			        url: "/card",
+			        data:JSON.stringify({
+			        	color: 1,
+			            boardId: idTablero
+			        }),
+			        dataType: "json",
+			        success: function(data){
+			        	console.log(data);
+			        },
+				    error: function(error) {
+				    	console.log(error.statusText + error.responseText);
+				    }
+			    });
+			break;
+			case "AZUL":
+			break;
+			case "CARCEL":
+				//Pierdes 3 turnos y pagas 5000 al banco
+				tablero.banco+=5000;
+				tablero.jugadores[tablero.turno-1].saldo-=5000;
+				tablero.jugadores[tablero.turno-1].turnosEnCastigo = 3;
+				updateJsonTablero();
+			break;
+			case "VACIA":
+				updateJsonTablero();
+			break;
+		}
+	}
+}
+
+function comprarPropiedad() {
+	//Verificamos si nos alcanza
+	closeModal();
+	if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor) {
+		//Si se puede comprar
+		//Aumentamos saldos
+		tablero.banco+=tablero.casillas[casillaNueva].valor;
+		tablero.jugadores[tablero.turno-1].saldo-=tablero.casillas[casillaNueva].valor;
+		//Actualizamos datos de la casilla
+		tablero.casillas[casillaNueva].valor = tablero.casillas[casillaNueva].valor/10; //Valor de renta
+		tablero.casillas[casillaNueva].comprada = true;
+		tablero.casillas[casillaNueva].propietario = tablero.jugadores[tablero.turno-1].nombre;
+		//Actualizamos al usuario
+		tablero.jugadores[tablero.turno-1].propiedades.push(tablero.casillas[casillaNueva]);
+		//Es todo
+		updateJsonTablero();
+	}else{
+		openModal('SALDO INSUFICIENTE','No tienes el suficiente saldo para comprar: '+tablero.casillas[casillaNueva].nombre,'ACEPTAR',null,'cancel();',null);
+	}
+	
+}
+
+function cancel() {
+	closeModal();
+	updateJsonTablero();
+}
+
+function updateJsonTablero() {
+	//Actualizamos posicion de jugador
+	tablero.jugadores[tablero.turno-1].casilla = casillaNueva;
+	//Incrementamos el turno
+	tablero.turno++;
+	if (tablero.turno == 5) {
+		tablero.turno = 1;
+	}
+	$.ajax({
+        type: "POST",
+        data: JSON.stringify(tablero),
+        url: "/board",
+        success: function(data){
+        	console.log(data);
+        },
+	    error: function(error) {
+	    	console.log(error.statusText + error.responseText);
+	    }
+    });
+}
+
+
+
+
+
+
+
+
+
+
 function getTarjeta(e,color) {
 	e = e || window.event;
     var target = e.target || e.srcElement;
     if ($(target).hasClass('disabled')) {
-    	showAlert("rojo","<strong>Espera!</strong> No puedes escoger una tarjeta todavia.");
+    	showAlert("DADO","rojo","<strong>Espera!</strong> No puedes escoger una tarjeta todavia.");
     }else{
     	
     }
@@ -92,10 +251,9 @@ function randomDado(e) {
 	e = e || window.event;
     var target = e.target || e.srcElement;
     if ($(target.parentElement).hasClass('disabled')) {
-    	showAlert("rojo","<strong>Espera!</strong> Aun no es tu turno de tirar.");
+    	showAlert("DADO","rojo","<strong>Espera!</strong> Aun no es tu turno de tirar.");
     }else{
     	loopVar = 1;
-		//Mostraremos una animacion para que se vea cool
 		myLoop(); 
     }
 }
@@ -110,74 +268,10 @@ function myLoop() {
 	}, 200);
 }
 
-function setImageDado() {
-	dado = getRandomNum(1, 6);
-	showAlert("verde","<strong>¡Calculando!</strong> Te toco el numero: "+dado);
-	document.getElementById('dado').src = 'img/dado/'+dado+'.png';
-	if (loopVar == 14) {
-		//Movemos al jugador
-		var casillaActual = parseInt(tablero.jugadores[tablero.turno-1].casilla);
-		var casillaNueva = casillaActual + dado;
-		tablero.jugadores[tablero.turno-1].casilla = casillaNueva;
-
-		switch(tablero.casillas[casillaNueva].tipo){
-			case "SALIDA":
-			break;
-			case "PROPIEDAD":
-				if (jugadores[data.turno-1].esBot == false) {
-					if (tablero.casillas[casillaNueva].comprada == false) {
-						openModal('CAISTE EN UNA PROPIEDAD','Deseas comprar la propiedad: '+tablero.casillas[casillaNueva].nombre,'COMPRAR','CANCELAR','comprarPropiedad();','closeModal();');
-					}
-				}else{
-					//El boot cayo en una propiedad
-					//Si es la primera la compramos
-
-				}
-				
-			break;
-			case "ROJA":
-			break;
-			case "AZUL":
-			break;
-			case "CARCEL":
-			break;
-			case "VACIA":
-			break;
-		}
-		//Incrementamos el turno
-		tablero.turno++;
-		if (tablero.turno == 5) {
-			tablero.turno = 1;
-		}
-		//En cualquier caso actualizamos json
-		$.ajax({
-        type: "POST",
-        data:JSON.stringify(tablero),
-        url: "/board",
-        success: function(data){
-        	console.log(data);
-        },
-	    error: function(error) {
-	    	console.log(error.statusText + error.responseText);
-	    }
-    });
-
-	}
-}
-
 
 function getRandomNum(min, max) {
 	min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function showAlert(color,text) {
-	$('.alert').removeClass('verde');
-	$('.alert').removeClass('rojo');
-	$('.alert').addClass(color);
-	$('.alert > label').html(text);
-	$('.alert').fadeIn();
-	setTimeout(function () {$('.alert').fadeOut();}, 2000)
 }
 

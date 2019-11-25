@@ -29,3 +29,8 @@ function showAlert(id,color,text) {
 function closeAlert(){
 	$('.alert').fadeOut();
 }
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};

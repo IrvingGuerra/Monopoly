@@ -19,6 +19,7 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
     }
     */
 
+    printf("%s\n", hm->body.p);
     Document req;
     req.Parse(hm->body.p);
     if (req.IsObject()){
@@ -115,18 +116,20 @@ void onGetCard(struct mg_connection *nc, struct http_message *hm)
         Cuerpo de petición:
         {
             color: number // 0: blue, 1:red
-            boardid: string
+            boardId: string
         }
     */
-    rapidjson::Document req;
+    printf("%s\n", hm->body.p);
+    Document req;
     req.Parse(hm->body.p);
     int color = req["color"].GetInt();
-    const char *boardid = req["boardid"].GetString();
+    const char *boardid = req["boardId"].GetString();
 
     const char *blueCard = rollCards(getFileName(color, boardid));
     unsigned int cardSize = strlen(blueCard);
     mg_send_head(nc, 200, cardSize, "Content-Type: application/json");
     mg_send(nc, blueCard, cardSize);
+
 }
 
 void sendError(struct mg_connection *nc)

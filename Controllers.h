@@ -3,6 +3,13 @@
 
 #include "mongoose.h"
 
+#include <iostream>
+
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/pointer.h"
+#include "rapidjson/stringbuffer.h"
+
 #include "Board.h"
 #include "Cards.h"
 

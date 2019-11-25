@@ -13,23 +13,25 @@
 #include "rapidjson/pointer.h"
 #include "rapidjson/stringbuffer.h"
 
+#include "Board.h"
+
 #define BLUE 0
 #define RED 1
 
 /**
  * Obtiene el arreglo de tarjetas del archivo json correspondiente en formato cadena.
  */
-void fetchCards(char **jsonCards, const char *filename);
+unsigned int fetchCards(char **jsonCards, const char *filename);
 
 /**
  * Obtiene la plantilla de las cartas para generar una nueva.
  */
-void fetchCardsTemplate(char **jsonCardsTemplate, int color);
+unsigned int fetchCardsTemplate(char **jsonCardsTemplate, int color);
 
 /**
  * Guarda una cadena JSON que contiene las tarjetas en su archivo correspondiente.
  */
-void saveCards(const char *jsonCards, const char *filename);
+void saveCards(const char *jsonCards, const char *filename, unsigned int cardsLen);
 
 /**
  * Rota las cartas del color correspondiente y retorna la carta que fue enviada al final.

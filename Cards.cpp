@@ -1,6 +1,6 @@
 #include "Cards.h"
 
-void fetchCards(char **jsonCards, const char *filename)
+unsigned int fetchCards(char **jsonCards, const char *filename)
 {
     // Se abre el archivo.
     int fd = open(filename, O_RDONLY);
@@ -33,21 +33,23 @@ void fetchCards(char **jsonCards, const char *filename)
 
     // Se cierra el archivo.
     close(fd);
+
+    return cardsSize;
 }
 
-void fetchCardsTemplate(char **jsonCardsTemplate, int color)
+unsigned int fetchCardsTemplate(char **jsonCardsTemplate, int color)
 {
     if (color == BLUE)
     {
-        fetchCards(jsonCardsTemplate, "azules.json");
+        return fetchCards(jsonCardsTemplate, "azules.json");
     }
     else
     {
-        fetchCards(jsonCardsTemplate, "rojas.json");
+        return fetchCards(jsonCardsTemplate, "rojas.json");
     }
 }
 
-void saveCards(const char *jsonCards, const char *filename)
+void saveCards(const char *jsonCards, const char *filename, unsigned int cardsLen)
 {
     // Se abre el archivo.
     int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
@@ -58,7 +60,7 @@ void saveCards(const char *jsonCards, const char *filename)
     }
 
     // Se escribe el archivo.
-    int res = write(fd, jsonCards, strlen(jsonCards));
+    int res = write(fd, jsonCards, cardsLen);
     if (res == -1)
     {
         perror("Error al escribir el archivo.\n");
@@ -74,19 +76,18 @@ const char *rollCards(const char *filename)
 {
     // Obtiene JSON.
     char *jsonCards;
-    fetchCards(&jsonCards, filename);
-
+    unsigned int clen = fetchCards(&jsonCards, filename);
     
     // Lo parsea.
-    rapidjson::Document cards;
-    cards.Parse(jsonCards);
+    rapidjson::Document root;
+    root.Parse(jsonCards);
 
     // Preparamos buffer para serializar.
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
 
     // Se copia primer elemento.
-    rapidjson::Value card(cards[0], cards.GetAllocator());
+    rapidjson::Value card(root["cards"][0], root.GetAllocator());
     card.Accept(writer);
 
     // Se guarda json para retornar.
@@ -94,12 +95,11 @@ const char *rollCards(const char *filename)
     strcpy(strCard, buffer.GetString());
 
     // Se cambia de posición.
-    cards.Erase(cards.Begin());
-    cards.PushBack(card, cards.GetAllocator());
+    root["cards"].Erase(root["cards"].Begin());
+    root["cards"].PushBack(card, root.GetAllocator());
 
     // Se guarda el JSON resultante.
-    cards.Accept(writer);
-    saveCards(buffer.GetString(), filename);
+    saveCards(stringify(root), filename, clen);
 
     return strCard;
 }
@@ -117,8 +117,8 @@ void generateCards(const char *boardid)
 {
     char *red;
     char *blue;
-    fetchCardsTemplate(&red, RED);
-    fetchCardsTemplate(&blue, BLUE);
-    saveCards(red, getFileName(RED, boardid));
-    saveCards(blue, getFileName(BLUE, boardid));
+    unsigned int rlen = fetchCardsTemplate(&red, RED);
+    unsigned int blen = fetchCardsTemplate(&blue, BLUE);
+    saveCards(red, getFileName(RED, boardid), rlen);
+    saveCards(blue, getFileName(BLUE, boardid), blen);
 }

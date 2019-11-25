@@ -1,10 +1,5 @@
 #include "Controllers.h"
 
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/pointer.h"
-#include "rapidjson/stringbuffer.h"
-
 using namespace rapidjson;
 
 void onGetGame(struct mg_connection *nc, struct http_message *hm)
@@ -19,10 +14,11 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
     }
     */
 
-    printf("%s\n", hm->body.p);
+    std::string body(hm->body.p, hm->body.len);
     Document req;
-    req.Parse(hm->body.p);
-    if (req.IsObject()){
+    req.Parse(body.c_str());
+    if (req.IsObject())
+    {
         const char *boardid = req["boardId"].GetString();
         const char *playerName = req["playerName"].GetString();
         bool playerIsBot = req["playerIsBot"].GetBool();
@@ -54,7 +50,8 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
                     // Se agrega jugador al archivo.
                     addPlayer(board, playerName, playerIsBot, playerColor);
                     board["enCurso"] = true; // Para este punto ya deberían haber al menos 2 jugadores.
-                    saveBoard(stringify(board), filename);
+                    const char * newBoard = stringify(board);
+                    saveBoard(newBoard, filename);
                     sendSuccess(nc);
                 }
             }
@@ -67,19 +64,21 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
         else
         {
             // Se genera tablero y cartas.
-            const char * jsonboard = generateBoard(boardid);
+            const char *jsonboard = generateBoard(boardid);
             rapidjson::Document board;
             board.Parse(jsonboard);
             // Se agrega jugador.
             addPlayer(board, playerName, playerIsBot, playerColor);
-            const char * newjsonboard = stringify(board);
+            const char *newjsonboard = stringify(board);
             //  Se guarda tablero y cartas
             saveBoard(newjsonboard, filename);
             generateCards(boardid);
             // Se manda conrifmación para unirse a juego.
             sendSuccess(nc);
         }
-    }else{
+    }
+    else
+    {
         sendError(nc);
     }
 }
@@ -88,7 +87,7 @@ void onGetBoard(struct mg_connection *nc, struct http_message *hm)
 {
     // Recibe una petición cuyo cuerpo es el id del tablero que pide.
     char *filename = new char[hm->query_string.len + 6];
-    mg_get_http_var(&hm->query_string, "boardId", filename,sizeof(filename));
+    mg_get_http_var(&hm->query_string, "boardId", filename, sizeof(filename));
     sprintf(filename, "%s.json", filename);
     // Obtiene el archivo correspondiente.
     char *jsonBoard;
@@ -102,7 +101,7 @@ void onPostBoard(struct mg_connection *nc, struct http_message *hm)
     const char *jsonBoard = hm->body.p;
     rapidjson::Document board;
     board.Parse(jsonBoard);
-    char * filename = new char[board["id"].GetStringLength() + 6];
+    char *filename = new char[board["id"].GetStringLength() + 6];
     sprintf(filename, "%s.json", board["id"].GetString());
     saveBoard(jsonBoard, filename);
 
@@ -119,9 +118,9 @@ void onGetCard(struct mg_connection *nc, struct http_message *hm)
             boardId: string
         }
     */
-    printf("%s\n", hm->body.p);
+    std::string reqbody(hm->body.p, hm->body.len);
     Document req;
-    req.Parse(hm->body.p);
+    req.Parse(reqbody.c_str());
     int color = req["color"].GetInt();
     const char *boardid = req["boardId"].GetString();
 
@@ -129,7 +128,6 @@ void onGetCard(struct mg_connection *nc, struct http_message *hm)
     unsigned int cardSize = strlen(blueCard);
     mg_send_head(nc, 200, cardSize, "Content-Type: application/json");
     mg_send(nc, blueCard, cardSize);
-
 }
 
 void sendError(struct mg_connection *nc)

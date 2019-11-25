@@ -119,7 +119,10 @@ const char * stringify(rapidjson::Document &board)
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     board.Accept(writer);
-    return buffer.GetString();
+    int bytes = buffer.GetSize();
+    char *newjson = new char[bytes + 1];
+    strcpy(newjson, buffer.GetString());
+    return newjson;
 }
 
 // unsigned int updateTurn(char **jsonBoard)

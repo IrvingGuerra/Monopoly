@@ -24,7 +24,7 @@ unsigned int fetchBoardTemplate(char **jsonTemplate);
 unsigned int fetchBoard(char **jsonBoard, const char *filename);
 
 // Actualiza el tablero en el archivo JSON.
-void saveBoard(const char *jsonBoard, const char *filename);
+void saveBoard(const char *jsonBoard, const char *filename, unsigned int bsize);
 
 // Agrega un jugador al tablero.
 void addPlayer(rapidjson::Document &board, const char *name, bool isBot, const char *color);
@@ -33,7 +33,7 @@ void addPlayer(rapidjson::Document &board, const char *name, bool isBot, const c
 bool findPlayer(rapidjson::Document &board, const char *name);
 
 // Pasa a cadena un tablero de tipo Document de rapidjson
-const char * stringify(rapidjson::Document &board);
+const char * stringify(rapidjson::Document &board, unsigned int &newbsize);
 
 // Actualiza el tablero con el turno que corresponde.
 // unsigned int updateTurn(char **jsonBoard);

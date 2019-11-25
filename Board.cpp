@@ -1,22 +1,5 @@
 #include "Board.h"
 
-const char * generateBoard(const char *boardid)
-{
-    // Creamos el nombre del archivo.
-    char *filename = new char[strlen(boardid) + 6];
-    sprintf(filename, "%s.json", boardid);
-
-    // Obtenemos plantilla de tablero y cambiamos id.
-    char *temp;
-    fetchBoardTemplate(&temp);
-    rapidjson::Document board;
-    board.Parse(temp);
-    board["id"].SetString(boardid, strlen(boardid), board.GetAllocator());
-
-    // Encadenamos el nuevo tablero.
-    return stringify(board);
-}
-
 unsigned int fetchBoardTemplate(char **jsonBoard)
 {
     return fetchBoard(jsonBoard, "tablero.json");
@@ -59,7 +42,7 @@ unsigned int fetchBoard(char **jsonBoard, const char *filename)
     return boardSize;
 }
 
-void saveBoard(const char *jsonBoard, const char *filename)
+void saveBoard(const char *jsonBoard, const char *filename, unsigned int bsize)
 {
     // Se abre el archivo.
     int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, S_IRUSR | S_IWUSR);
@@ -70,7 +53,7 @@ void saveBoard(const char *jsonBoard, const char *filename)
     }
 
     // Se escribe el archivo.
-    int res = write(fd, jsonBoard, strlen(jsonBoard));
+    int res = write(fd, jsonBoard, bsize);
     if (res == -1)
     {
         perror("Error al escribir el archivo.\n");
@@ -114,14 +97,18 @@ bool findPlayer(rapidjson::Document &board, const char *name)
     return playerExists;
 }
 
-const char * stringify(rapidjson::Document &board)
+const char * stringify(rapidjson::Document &board, unsigned int &newbsize)
 {
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    buffer.Flush();
     board.Accept(writer);
-    int bytes = buffer.GetSize();
+    unsigned int bytes = buffer.GetSize();
     char *newjson = new char[bytes + 1];
     strcpy(newjson, buffer.GetString());
+
+    // Retornamos tablero.
+    newbsize = bytes;
     return newjson;
 }
 

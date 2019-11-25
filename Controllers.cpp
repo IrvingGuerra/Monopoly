@@ -50,9 +50,10 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
     {
         // Obtenemos y traducimos contenido de archivo.
         char *jsonboard;
-        fetchBoard(&jsonboard, filename);
+        unsigned int bsize = fetchBoard(&jsonboard, filename);
+        std::string boardstr(jsonboard, bsize);
         rapidjson::Document board;
-        board.Parse(jsonboard);
+        board.Parse(boardstr.c_str());
 
         // Si el jugador no existe y se puede unir, se une.
         if (!findPlayer(board, playerName))
@@ -67,8 +68,9 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
                 // Se agrega jugador al archivo.
                 addPlayer(board, playerName, playerIsBot, playerColor);
                 board["enCurso"] = true; // Para este punto ya deberían haber al menos 2 jugadores.
-                const char * newBoard = stringify(board);
-                saveBoard(newBoard, filename);
+                unsigned int newbsize;
+                const char * newBoard = stringify(board, newbsize);
+                saveBoard(newBoard, filename, newbsize);
                 sendSuccess(nc);
             }
         }
@@ -81,14 +83,17 @@ void onGetGame(struct mg_connection *nc, struct http_message *hm)
     else
     {
         // Se genera tablero y cartas.
-        const char *jsonboard = generateBoard(boardid);
+        char *templ;
+        unsigned int tempsize = fetchBoardTemplate(&templ);
+        std::string boardstr(templ, tempsize);
         rapidjson::Document board;
-        board.Parse(jsonboard);
+        board.Parse(boardstr.c_str());
         // Se agrega jugador.
         addPlayer(board, playerName, playerIsBot, playerColor);
-        const char *newjsonboard = stringify(board);
+        unsigned int newbsize;
+        const char *newjsonboard = stringify(board, newbsize);
         //  Se guarda tablero y cartas
-        saveBoard(newjsonboard, filename);
+        saveBoard(newjsonboard, filename, newbsize);
         generateCards(boardid);
         // Se manda conrifmación para unirse a juego.
         sendSuccess(nc);
@@ -116,7 +121,7 @@ void onPostBoard(struct mg_connection *nc, struct http_message *hm)
     board.Parse(jsonTablero.c_str());
     char *filename = new char[board["id"].GetStringLength() + 6];
     sprintf(filename, "%s.json", board["id"].GetString());
-    saveBoard(jsonTablero.c_str(), filename);
+    saveBoard(jsonTablero.c_str(), filename, jsonTablero.size());
 
     // Se envía confirmación
     sendSuccess(nc);

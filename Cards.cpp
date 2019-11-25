@@ -102,7 +102,10 @@ const char *rollCards(const char *filename)
     root["cards"].PushBack(card, root.GetAllocator());
 
     // Se guarda el JSON resultante.
-    saveCards(stringify(root), filename, clen);
+    unsigned int nbsize;
+    const char *newboard = stringify(root, nbsize);
+    
+    saveCards(newboard, filename, clen);
 
     return strCard;
 }

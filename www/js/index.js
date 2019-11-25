@@ -1,3 +1,12 @@
+$(document).ready(function() {
+	console.log($('#indexAudio'));
+	$('#indexAudio')[0].play();
+	/*
+	var obj = document.createElemnet("audio");
+	obj.src = "sounds/index.wav";
+	obj.play();*/
+});
+
 function configureProfile() {
 	window.location = 'configure.html';
 }

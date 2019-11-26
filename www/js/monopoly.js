@@ -30,89 +30,94 @@ function updateGame() {
         url: "/board",
         success: function(data){
         	tablero = data;
-			for (var j = 0; j < tablero.jugadores.length-1; j++) {
-				if (tablero.jugadores[j].saldo > tablero.jugadores[j+1].saldo) {
-					if (tablero.jugadores[j].saldo > jugadorGanadorSaldo) {
-						jugadorGanador = tablero.jugadores[j].nombre;
-						jugadorGanadorSaldo = tablero.jugadores[j].saldo;
-					}
-				}else{
-					if (tablero.jugadores[j+1].saldo > jugadorGanadorSaldo) {
-						jugadorGanador = tablero.jugadores[j+1].nombre;
-						jugadorGanadorSaldo = tablero.jugadores[j+1].saldo;
-					}
-				}
-			}
-			//console.log("El jugador con mas dinero es: "+jugadorGanador);
-        	//ACTUALIZAMOS CASILLAS
-        	for (var i = 0; i < tablero.casillas.length; i++){
-        		if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == true){
-        			$("#casilla"+i+"  > .info_propiedad > .propietario").html(tablero.casillas[i].propietario);
-        			$("#casilla"+i+"  > .info_propiedad > .precio").html("RENTA $"+formatMoney(tablero.casillas[i].valor));
-        			//Y SI ES TUYA, LA PONEMOS BRILLANTE
-        			if (tablero.casillas[i].propietario == username) {
-        				$("#casilla"+i).addClass('actual');
-        			}
-        		}else if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == false){
-        			//Ponemos su costo
-        			$("#casilla"+i+"  > .info_propiedad > .propietario").html("SIN DUEÑO");
-        			$("#casilla"+i+"  > .info_propiedad > .precio").html("PRECIO $"+formatMoney(tablero.casillas[i].valor));
-        		}
-        	}
-        	//ELIMINAMOS LOS TOKENS
-        	var players = "<div>BANCO: $"+formatMoney(tablero.banco)+" </div><br>";
-        	if ($('.player1').length){$('.player1').remove();}
-    		if ($('.player2').length){$('.player2').remove();}
-    		if ($('.player3').length){$('.player3').remove();}
-    		if ($('.player4').length){$('.player4').remove();}
-    		//AGREGAMOS LOS TOKENS
-        	for (var i = 0; i < tablero.jugadores.length; i++) {
-        		players+="<div style='color:"+tablero.jugadores[i].color+"'>"+(i+1)+": "+tablero.jugadores[i].nombre.toUpperCase()+"<span style='color:black'> - $"+formatMoney(tablero.jugadores[i].saldo)+"</span></div><br>";
-        		$("#casilla"+tablero.jugadores[i].casilla).append('<div class="player'+(i+1)+'" style="background:'+tablero.jugadores[i].color+'"></div>');
-        	}
-        	//SIEMPRE PONEMOS BRILLO EN LA FICHA DEL JUGADOR DEL NAVEGADOR
-        	for (var i = 0; i < tablero.jugadores.length; i++) {
-				if (tablero.jugadores[i].nombre == username) {
-					$('.player'+(i+1)).addClass('actual');
-				}
-			}
-        	
-        	//LISTAMOS JUGADORES
-			$('.players').html(players);
-			if (tablero.jugadores.length < 4) {
-				$('.statusGame').html("ESPERANDO JUGADORES...");
-				$('.statusGame').fadeIn();
-			}else{
-				if (time == 1) {
-					$('.statusGame').html("ES TURNO DE: "+tablero.jugadores[tablero.turno-1].nombre);
-					$('.statusGame').fadeIn();
-					//PRIMERO VERIFICAMOS QUE NO ESTE CASTIGADO, SEA BOT O NO
-					if (tablero.jugadores[tablero.turno-1].turnosEnCastigo>0) {
-						time = 2;
-						$('.statusGame').html("UPS! "+tablero.jugadores[tablero.turno-1].nombre+" ESTA CASTIGADO DURANTE: "+tablero.jugadores[tablero.turno-1].turnosEnCastigo+" TURNOS");
-						$('.statusGame').fadeIn();
-			        	setTimeout(function(){ 
-							time = 1;
-							tablero.jugadores[tablero.turno-1].turnosEnCastigo--;
-							casillaNueva = tablero.jugadores[tablero.turno-1].casilla;
-							updateJsonTablero();
-			        	}, 3000);
+
+        	if (tablero.enCurso == true) {
+        		for (var j = 0; j < tablero.jugadores.length-1; j++) {
+					if (tablero.jugadores[j].saldo > tablero.jugadores[j+1].saldo) {
+						if (tablero.jugadores[j].saldo > jugadorGanadorSaldo) {
+							jugadorGanador = tablero.jugadores[j].nombre;
+							jugadorGanadorSaldo = tablero.jugadores[j].saldo;
+						}
 					}else{
-						//VALIDAMOS SI NO ES BOOT
-						if (tablero.jugadores[tablero.turno-1].esBot == false) {
-							if (tablero.jugadores[tablero.turno-1].nombre == username) {
-								$('.dado').removeClass("disabled");
-							}else{
-								$('.dado').addClass("disabled");
-							}
-						}else{
-							//Es turno de un boot. Esperemos un segundo
-							$('.dado').addClass("disabled");
-							animacionDado();
+						if (tablero.jugadores[j+1].saldo > jugadorGanadorSaldo) {
+							jugadorGanador = tablero.jugadores[j+1].nombre;
+							jugadorGanadorSaldo = tablero.jugadores[j+1].saldo;
 						}
 					}
-				}	
-			}
+				}
+				//console.log("El jugador con mas dinero es: "+jugadorGanador);
+	        	//ACTUALIZAMOS CASILLAS
+	        	for (var i = 0; i < tablero.casillas.length; i++){
+	        		if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == true){
+	        			$("#casilla"+i+"  > .info_propiedad > .propietario").html(tablero.casillas[i].propietario);
+	        			$("#casilla"+i+"  > .info_propiedad > .precio").html("RENTA $"+formatMoney(tablero.casillas[i].valor));
+	        			//Y SI ES TUYA, LA PONEMOS BRILLANTE
+	        			if (tablero.casillas[i].propietario == username) {
+	        				$("#casilla"+i).addClass('actual');
+	        			}
+	        		}else if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == false){
+	        			//Ponemos su costo
+	        			$("#casilla"+i+"  > .info_propiedad > .propietario").html("SIN DUEÑO");
+	        			$("#casilla"+i+"  > .info_propiedad > .precio").html("PRECIO $"+formatMoney(tablero.casillas[i].valor));
+	        		}
+	        	}
+	        	//ELIMINAMOS LOS TOKENS
+	        	var players = "<div>BANCO: $"+formatMoney(tablero.banco)+" </div><br>";
+	        	if ($('.player1').length){$('.player1').remove();}
+	    		if ($('.player2').length){$('.player2').remove();}
+	    		if ($('.player3').length){$('.player3').remove();}
+	    		if ($('.player4').length){$('.player4').remove();}
+	    		//AGREGAMOS LOS TOKENS
+	        	for (var i = 0; i < tablero.jugadores.length; i++) {
+	        		players+="<div style='color:"+tablero.jugadores[i].color+"'>"+(i+1)+": "+tablero.jugadores[i].nombre.toUpperCase()+"<span style='color:black'> - $"+formatMoney(tablero.jugadores[i].saldo)+"</span></div><br>";
+	        		$("#casilla"+tablero.jugadores[i].casilla).append('<div class="player'+(i+1)+'" style="background:'+tablero.jugadores[i].color+'"></div>');
+	        	}
+	        	//SIEMPRE PONEMOS BRILLO EN LA FICHA DEL JUGADOR DEL NAVEGADOR
+	        	for (var i = 0; i < tablero.jugadores.length; i++) {
+					if (tablero.jugadores[i].nombre == username) {
+						$('.player'+(i+1)).addClass('actual');
+					}
+				}
+	        	
+	        	//LISTAMOS JUGADORES
+				$('.players').html(players);
+				if (tablero.jugadores.length < 4) {
+					$('.statusGame').html("ESPERANDO JUGADORES...");
+					$('.statusGame').fadeIn();
+				}else{
+					if (time == 1) {
+						$('.statusGame').html("ES TURNO DE: "+tablero.jugadores[tablero.turno-1].nombre);
+						$('.statusGame').fadeIn();
+						//PRIMERO VERIFICAMOS QUE NO ESTE CASTIGADO, SEA BOT O NO
+						if (tablero.jugadores[tablero.turno-1].turnosEnCastigo>0) {
+							time = 2;
+							$('.statusGame').html("UPS! "+tablero.jugadores[tablero.turno-1].nombre+" ESTA CASTIGADO DURANTE: "+tablero.jugadores[tablero.turno-1].turnosEnCastigo+" TURNOS");
+							$('.statusGame').fadeIn();
+				        	setTimeout(function(){ 
+								time = 1;
+								tablero.jugadores[tablero.turno-1].turnosEnCastigo--;
+								casillaNueva = tablero.jugadores[tablero.turno-1].casilla;
+								updateJsonTablero();
+				        	}, 3000);
+						}else{
+							//VALIDAMOS SI NO ES BOOT
+							if (tablero.jugadores[tablero.turno-1].esBot == false) {
+								if (tablero.jugadores[tablero.turno-1].nombre == username) {
+									$('.dado').removeClass("disabled");
+								}else{
+									$('.dado').addClass("disabled");
+								}
+							}else{
+								//Es turno de un boot. Esperemos un segundo
+								$('.dado').addClass("disabled");
+								animacionDado();
+							}
+						}
+					}	
+				}
+        	}else{
+				openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null);
+        	}	
         },
 	    error: function(error) {
 	    	console.log(error.statusText + error.responseText);
@@ -130,8 +135,8 @@ function moverJugador() {
 		tablero.banco-=5000;
 		if(tablero.banco<=0){
 			//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
-			superModal = true;
-			openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null,100);
+			tablero.enCurso = false;
+			updateJsonTablero();
 		}else{
 			tablero.jugadores[tablero.turno-1].saldo+=5000;
 			tablero.jugadores[tablero.turno-1].vueltas++;
@@ -143,9 +148,8 @@ function moverJugador() {
 			$('#2beep')[0].play();
 			tablero.banco-=10000;
 			if(tablero.banco<=0){
-				//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
-				superModal = true;
-				openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null);
+				tablero.enCurso = false;
+				updateJsonTablero();
 			}else{
 				tablero.jugadores[tablero.turno-1].saldo+=10000;
 				updateJsonTablero();
@@ -271,8 +275,8 @@ function moverJugador() {
 			        	tablero.banco-=data.dinero;
 			        	if(tablero.banco<=0){
 							//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
-							superModal = true;
-							openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null);
+							tablero.enCurso = false;
+							updateJsonTablero();
 						}else{
 							tablero.jugadores[tablero.turno-1].saldo+=data.dinero;
 							updateJsonTablero();

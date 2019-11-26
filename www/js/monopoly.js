@@ -43,27 +43,31 @@ function updateGame() {
 					}
 				}
 			}
-			console.log("El jugador con mas dinero es: "+jugadorGanador);
+			//console.log("El jugador con mas dinero es: "+jugadorGanador);
         	//ACTUALIZAMOS CASILLAS
         	for (var i = 0; i < tablero.casillas.length; i++){
         		if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == true){
         			$("#casilla"+i+"  > .info_propiedad > .propietario").html(tablero.casillas[i].propietario);
-        			$("#casilla"+i+"  > .info_propiedad > .precio").html("RENTA $"+tablero.casillas[i].valor);
+        			$("#casilla"+i+"  > .info_propiedad > .precio").html("RENTA $"+formatMoney(tablero.casillas[i].valor));
         			//Y SI ES TUYA, LA PONEMOS BRILLANTE
         			if (tablero.casillas[i].propietario == username) {
         				$("#casilla"+i).addClass('actual');
         			}
+        		}else if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == false){
+        			//Ponemos su costo
+        			$("#casilla"+i+"  > .info_propiedad > .propietario").html("SIN DUEÑO");
+        			$("#casilla"+i+"  > .info_propiedad > .precio").html("PRECIO $"+formatMoney(tablero.casillas[i].valor));
         		}
         	}
         	//ELIMINAMOS LOS TOKENS
-        	var players = "";
+        	var players = "<div>BANCO: $"+formatMoney(tablero.banco)+" </div><br>";
         	if ($('.player1').length){$('.player1').remove();}
     		if ($('.player2').length){$('.player2').remove();}
     		if ($('.player3').length){$('.player3').remove();}
     		if ($('.player4').length){$('.player4').remove();}
     		//AGREGAMOS LOS TOKENS
         	for (var i = 0; i < tablero.jugadores.length; i++) {
-        		players+="<div style='color:"+tablero.jugadores[i].color+"'>"+(i+1)+": "+tablero.jugadores[i].nombre.toUpperCase()+"<span style='color:black'> - $"+tablero.jugadores[i].saldo+"</span></div><br>";
+        		players+="<div style='color:"+tablero.jugadores[i].color+"'>"+(i+1)+": "+tablero.jugadores[i].nombre.toUpperCase()+"<span style='color:black'> - $"+formatMoney(tablero.jugadores[i].saldo)+"</span></div><br>";
         		$("#casilla"+tablero.jugadores[i].casilla).append('<div class="player'+(i+1)+'" style="background:'+tablero.jugadores[i].color+'"></div>');
         	}
         	//SIEMPRE PONEMOS BRILLO EN LA FICHA DEL JUGADOR DEL NAVEGADOR
@@ -123,13 +127,13 @@ function moverJugador() {
 		$('#2beep')[0].play();
 		//Dio una vuelta
 		casillaNueva = casillaNueva - 26;
-		tablero.banco-=1000;
+		tablero.banco-=5000;
 		if(tablero.banco<=0){
 			//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
 			superModal = true;
 			openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null,100);
 		}else{
-			tablero.jugadores[tablero.turno-1].saldo+=1000;
+			tablero.jugadores[tablero.turno-1].saldo+=5000;
 			tablero.jugadores[tablero.turno-1].vueltas++;
 			updateJsonTablero();
 		}
@@ -137,13 +141,13 @@ function moverJugador() {
 	switch(tablero.casillas[casillaNueva].tipo){
 		case "SALIDA":
 			$('#2beep')[0].play();
-			tablero.banco-=1000;
+			tablero.banco-=10000;
 			if(tablero.banco<=0){
 				//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
 				superModal = true;
 				openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null);
 			}else{
-				tablero.jugadores[tablero.turno-1].saldo+=1000;
+				tablero.jugadores[tablero.turno-1].saldo+=10000;
 				updateJsonTablero();
 			}
 		break;

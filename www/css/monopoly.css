@@ -264,3 +264,17 @@
 	display: none;
 	padding-bottom: 15px;
 }
+
+
+.btnSalir{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	z-index: 10;
+	display: table;
+	opacity: 0.3;
+}
+
+.btnSalir:hover{
+	opacity: 1;
+}

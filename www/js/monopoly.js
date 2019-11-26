@@ -100,7 +100,6 @@ function updateGame() {
 }
 
 function moverJugador() {
-	dado=2;
 	//Movemos al jugador
 	casillaNueva = tablero.jugadores[tablero.turno-1].casilla + dado;
 	if (casillaNueva>25) { //Si llega a 26
@@ -333,4 +332,10 @@ function getRandomNum(min, max) {
 	min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function abandonarJuego() {
+	eraseCookie("idTablero");
+	eraseCookie("username");
+	location.reload();
 }

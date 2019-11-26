@@ -13,13 +13,15 @@ function openModal(title,description,btn1,btn2,fnbtn1,fnbtn2) {
 }
 
 function closeModal() {
+	$('#beep')[0].play();
 	$('.modal').fadeOut();
 	setTimeout(function () {$('.modal').remove();}, 500);
 }
 //Funciones para alertas pequeñas
 function showAlert(id,color,text) {
+	desplazaA('body');
 	$('#alertas').html(""); //Limpiamos el div especializado para alertas
-	$('#alertas').append('<div class="alert"></div>');
+	$('#alertas').append('<div class="alert '+color+'"></div>');
 	$('.alert').append('<span class="closebtnAlert" onclick="closeAlert();">&times;</span>');
 	$('.alert').append('<label>'+text+'</label>');
 	$('.alert').addClass(color);
@@ -34,3 +36,14 @@ String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
+
+function desplazaA(url) {
+    var destino = $(url);
+    if (destino.length == 0) {
+      destino = $('a[name="' + this.hash.substr(1) + '"]');
+    }
+    if (destino.length == 0) {
+      destino = $('html');
+    }
+    $('html, body').animate({ scrollTop: destino.offset().top }, 800);
+}

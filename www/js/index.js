@@ -1,15 +1,10 @@
-$(document).ready(function() {
-	console.log($('#indexAudio'));
-	$('#indexAudio')[0].play();
-	/*
-	var obj = document.createElemnet("audio");
-	obj.src = "sounds/index.wav";
-	obj.play();*/
-});
-
 function configureProfile() {
-	window.location = 'configure.html';
+	$('#beep')[0].play();
+	setTimeout(function(){ 
+		window.location = 'configure.html';
+	}, 300);
 }
 function showRules() {
+	$('#beep')[0].play();
 	openModal('REGLAS','Estas son las reglas','ACEPTAR',null,'closeModal();',null)
 }

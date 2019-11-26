@@ -32,6 +32,10 @@ function updateGame() {
         		if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == true){
         			$("#casilla"+i+"  > .info_propiedad > .propietario").html(tablero.casillas[i].propietario);
         			$("#casilla"+i+"  > .info_propiedad > .precio").html("RENTA $"+tablero.casillas[i].valor);
+        			//Y SI ES TUYA, LA PONEMOS BRILLANTE
+        			if (tablero.casillas[i].propietario == username) {
+        				$("#casilla"+i).addClass('actual');
+        			}
         		}
         	}
         	//ELIMINAMOS LOS TOKENS
@@ -45,6 +49,13 @@ function updateGame() {
         		players+="<div style='color:"+tablero.jugadores[i].color+"'>"+(i+1)+": "+tablero.jugadores[i].nombre.toUpperCase()+"<span style='color:black'> - $"+tablero.jugadores[i].saldo+"</span></div><br>";
         		$("#casilla"+tablero.jugadores[i].casilla).append('<div class="player'+(i+1)+'" style="background:'+tablero.jugadores[i].color+'"></div>');
         	}
+        	//SIEMPRE PONEMOS BRILLO EN LA FICHA DEL JUGADOR DEL NAVEGADOR
+        	for (var i = 0; i < tablero.jugadores.length; i++) {
+				if (tablero.jugadores[i].nombre == username) {
+					$('.player'+(i+1)).addClass('actual');
+				}
+			}
+        	
         	//LISTAMOS JUGADORES
 			$('.players').html(players);
 			if (tablero.jugadores.length < 4) {
@@ -89,9 +100,11 @@ function updateGame() {
 }
 
 function moverJugador() {
+	dado=2;
 	//Movemos al jugador
 	casillaNueva = tablero.jugadores[tablero.turno-1].casilla + dado;
 	if (casillaNueva>25) { //Si llega a 26
+		$('#2beep')[0].play();
 		//Dio una vuelta
 		casillaNueva = casillaNueva - 26;
 		tablero.banco-=1000;
@@ -101,6 +114,7 @@ function moverJugador() {
 	}
 	switch(tablero.casillas[casillaNueva].tipo){
 		case "SALIDA":
+			$('#2beep')[0].play();
 			tablero.banco-=1000;
 			tablero.jugadores[tablero.turno-1].saldo+=1000;
 			updateJsonTablero();
@@ -163,6 +177,7 @@ function moverJugador() {
 			}
 		break;
 		case "ROJA":
+			$('#error')[0].play();
 			$.ajax({
 		        type: "POST",
 		        url: "/card",
@@ -174,15 +189,17 @@ function moverJugador() {
 		        success: function(data){
 		        	$(".cartasRojas").css("font-size","20px");
 		        	$('.cartasRojas').html(data.descripcion);
+		        	$('.cartasRojas').addClass('actual');
 		        	//Mostramos la info solamente 4 segundos
 		        	setTimeout(function(){ 
+		        		$('.cartasRojas').removeClass('actual');
 		        		$(".cartasRojas").css("font-size","80px");
 		        		$('.cartasRojas').html('<i class="fa fa-question-circle"></i>');
 			        	tablero.banco+=data.dinero;
 						tablero.jugadores[tablero.turno-1].saldo-=data.dinero;
 						tablero.jugadores[tablero.turno-1].turnosEnCastigo = data.turnos;
 						updateJsonTablero();
-		        	}, 5000);
+		        	}, 7000);
 					
 		        },
 			    error: function(error) {
@@ -191,6 +208,7 @@ function moverJugador() {
 		    });
 		break;
 		case "AZUL":
+			$('#success')[0].play();
 			$.ajax({
 		        type: "POST",
 		        url: "/card",
@@ -202,13 +220,15 @@ function moverJugador() {
 		        success: function(data){
 		        	$(".cartasAzules").css("font-size","20px");
 		        	$('.cartasAzules').html(data.descripcion);
+		        	$('.cartasAzules').addClass('actual');
 		        	setTimeout(function(){ 
+		        		$('.cartasAzules').removeClass('actual');
 						$(".cartasAzules").css("font-size","80px");
 		        		$('.cartasAzules').html('<i class="fa fa-question-circle"></i>');
 			        	tablero.banco-=data.dinero;
 						tablero.jugadores[tablero.turno-1].saldo+=data.dinero;
 						updateJsonTablero();
-					}, 5000);
+					}, 7000);
 		        },
 			    error: function(error) {
 			    	console.log(error.statusText + error.responseText);
@@ -216,6 +236,7 @@ function moverJugador() {
 		    });
 		break;
 		case "CARCEL":
+			$('#error')[0].play();
 			//Pierdes 3 turnos y pagas 5000 al banco
 			tablero.banco+=5000;
 			tablero.jugadores[tablero.turno-1].saldo-=5000;
@@ -256,6 +277,7 @@ function cancel() {
 }
 
 function updateJsonTablero() {
+	$('#beep')[0].play();
 	tablero.jugadores[tablero.turno-1].casilla = casillaNueva;
 	tablero.turno++;
 	if (tablero.turno == 5) {
@@ -288,6 +310,7 @@ function randomDado(e) {
 }
 
 function animacionDado() {
+	$('#dadoSound')[0].play();
 	var interval = setInterval(function() { 
 		if (time <= 15) { 
 			setImageDado();

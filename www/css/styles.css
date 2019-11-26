@@ -126,8 +126,8 @@ input[type=text]:focus {
     -ms-transform: rotateZ(10deg);
   }
 }
-.rojo {background-color: #D50E0E;}
-.verde {background-color: #27902C;}
+.rojo {background-color: #D50E0E !important;}
+.verde {background-color: #27902C !important;}
 .morado {background-color: #8449A3;}
 .azul {background-color: #3953BB;}
 .negro {background-color: #1A1A1A;}

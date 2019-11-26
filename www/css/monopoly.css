@@ -51,8 +51,8 @@
 }
 .player1 {
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 40px;
+	height: 40px;
 	border-radius: 50%;
 	border: 3px solid black;
 	background: red;
@@ -61,8 +61,8 @@
 }
 .player2 {
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 40px;
+	height: 40px;
 	border-radius: 50%;
 	border: 3px solid black;
 	background: blue;
@@ -71,8 +71,8 @@
 }
 .player3 {
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 40px;
+	height: 40px;
 	border-radius: 50%;
 	border: 3px solid black;
 	background: green;
@@ -81,13 +81,16 @@
 }
 .player4 {
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 40px;
+	height: 40px;
 	border-radius: 50%;
 	border: 3px solid black;
 	background: white;
 	bottom: 20px;
 	left: 85px;
+}
+.actual{
+	box-shadow:0px 0px 20px 15px #ffe100;
 }
 .carcel{
 	width: 100%;

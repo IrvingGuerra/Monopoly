@@ -49,9 +49,12 @@ function joinGame(gameMode, type) {
 														},
 														success: function (data) {
 															if (data == "SUCCESS") {
-																setCookie('idTablero', idTablero, 7);
-																setCookie('username', $('#username').val(), 7);
-																window.location = 'monopoly.html';
+																$('#beep')[0].play();
+																setTimeout(function(){ 
+																	setCookie('idTablero', idTablero, 7);
+																	setCookie('username', $('#username').val(), 7);
+																	window.location = 'monopoly.html';
+																}, 300);
 															}
 														}
 													});
@@ -80,10 +83,13 @@ function joinGame(gameMode, type) {
 							},
 							success: function (data) {
 								if (data == "SUCCESS") {
-									//Nos metemos al tablero
-									setCookie('idTablero', idTablero, 7);
-									setCookie('username', $('#username').val(), 7);
-									window.location = 'monopoly.html';
+									$('#beep')[0].play();
+									setTimeout(function(){ 
+										//Nos metemos al tablero
+										setCookie('idTablero', idTablero, 7);
+										setCookie('username', $('#username').val(), 7);
+										window.location = 'monopoly.html';
+									}, 300);	
 								}
 							}
 						});
@@ -102,16 +108,21 @@ function joinGame(gameMode, type) {
 								},
 								success: function (data) {
 									if (data == "SUCCESS") {
-										//Nos metemos al tablero
-										setCookie('idTablero', $('#idGame').val(), 7);
-										setCookie('username', $('#username').val(), 7);
-										window.location = 'monopoly.html';
+										$('#beep')[0].play();
+										setTimeout(function(){ 
+											//Nos metemos al tablero
+											setCookie('idTablero', $('#idGame').val(), 7);
+											setCookie('username', $('#username').val(), 7);
+											window.location = 'monopoly.html';
+										}, 300);	
 									}
 								},error: function(error) {
+									$('#error')[0].play();
 							    	showAlert("Nombre", "rojo", "<strong>Error!</strong> El ID de juego NO existe");
 							    }
 							});
 						}else{
+							$('#error')[0].play();
 							showAlert("Nombre", "rojo", "<strong>Error!</strong> Tienes que ingresar un ID de juego");
 						}
 					break;
@@ -119,6 +130,7 @@ function joinGame(gameMode, type) {
 				break;
 		}
 	} else {
+		$('#error')[0].play();
 		showAlert("Nombre", "rojo", "<strong>Error!</strong> Tienes que escoger un nombre de usuario");
 	}
 }

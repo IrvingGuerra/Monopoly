@@ -21,7 +21,7 @@ function joinGame(gameMode, type) {
 								url: "/game",
 								data: {
 									boardId: idTablero,
-									playerName: "BOT1",
+									playerName: "BOT2",
 									playerIsBot: true,
 									playerColor: "#000000"
 								},
@@ -32,7 +32,7 @@ function joinGame(gameMode, type) {
 											url: "/game",
 											data: {
 												boardId: idTablero,
-												playerName: "BOT2",
+												playerName: "BOT3",
 												playerIsBot: true,
 												playerColor: "#FFFFFF"
 											},
@@ -43,7 +43,7 @@ function joinGame(gameMode, type) {
 														url: "/game",
 														data: {
 															boardId: idTablero,
-															playerName: "BOT3",
+															playerName: "BOT4",
 															playerIsBot: true,
 															playerColor: "#138F00"
 														},

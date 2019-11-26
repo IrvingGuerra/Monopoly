@@ -4,6 +4,9 @@ var tablero;
 var casillaNueva;
 var time = 1;  
 var dado = 1;
+var jugadorGanador;
+var jugadorGanadorSaldo = 0;
+var superModal = false;
 
 $(document).ready(function() {
 	idTablero = getCookie('idTablero');
@@ -27,6 +30,20 @@ function updateGame() {
         url: "/board",
         success: function(data){
         	tablero = data;
+			for (var j = 0; j < tablero.jugadores.length-1; j++) {
+				if (tablero.jugadores[j].saldo > tablero.jugadores[j+1].saldo) {
+					if (tablero.jugadores[j].saldo > jugadorGanadorSaldo) {
+						jugadorGanador = tablero.jugadores[j].nombre;
+						jugadorGanadorSaldo = tablero.jugadores[j].saldo;
+					}
+				}else{
+					if (tablero.jugadores[j+1].saldo > jugadorGanadorSaldo) {
+						jugadorGanador = tablero.jugadores[j+1].nombre;
+						jugadorGanadorSaldo = tablero.jugadores[j+1].saldo;
+					}
+				}
+			}
+			console.log("El jugador con mas dinero es: "+jugadorGanador);
         	//ACTUALIZAMOS CASILLAS
         	for (var i = 0; i < tablero.casillas.length; i++){
         		if(tablero.casillas[i].tipo == "PROPIEDAD" && tablero.casillas[i].comprada == true){
@@ -107,22 +124,37 @@ function moverJugador() {
 		//Dio una vuelta
 		casillaNueva = casillaNueva - 26;
 		tablero.banco-=1000;
-		tablero.jugadores[tablero.turno-1].saldo+=1000;
-		tablero.jugadores[tablero.turno-1].vueltas++;
-		updateJsonTablero();
+		if(tablero.banco<=0){
+			//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
+			superModal = true;
+			openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null,100);
+		}else{
+			tablero.jugadores[tablero.turno-1].saldo+=1000;
+			tablero.jugadores[tablero.turno-1].vueltas++;
+			updateJsonTablero();
+		}
 	}
 	switch(tablero.casillas[casillaNueva].tipo){
 		case "SALIDA":
 			$('#2beep')[0].play();
 			tablero.banco-=1000;
-			tablero.jugadores[tablero.turno-1].saldo+=1000;
-			updateJsonTablero();
+			if(tablero.banco<=0){
+				//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
+				superModal = true;
+				openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null);
+			}else{
+				tablero.jugadores[tablero.turno-1].saldo+=1000;
+				updateJsonTablero();
+			}
 		break;
 		case "PROPIEDAD":
 			if (tablero.jugadores[tablero.turno-1].esBot == false) {
 				if (tablero.casillas[casillaNueva].comprada == false) {
-					openModal('CAISTE EN UNA PROPIEDAD','Deseas comprar la propiedad: '+tablero.casillas[casillaNueva].nombre,'COMPRAR','CANCELAR','comprarPropiedad();','cancel();');
+					if (superModal == false) {
+						openModal('CAISTE EN UNA PROPIEDAD','Deseas comprar la propiedad: '+tablero.casillas[casillaNueva].nombre,'COMPRAR','CANCELAR','comprarPropiedad();','cancel();');
+					}
 				}else{
+					//ESTA COMPRADA
 					if (tablero.casillas[casillaNueva].propietario != tablero.jugadores[tablero.turno-1].nombre) {
 						//pagas si no es tuya
 						for (var i = 0; i < tablero.jugadores.length; i++) {
@@ -134,6 +166,7 @@ function moverJugador() {
 							}
 						}
 					}
+					updateJsonTablero();
 				}
 			}else{
 				//El boot cayo en una propiedad
@@ -144,6 +177,8 @@ function moverJugador() {
 						//La comprará si es la primera que cae y si le alcanza
 						if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor){
 							comprarPropiedad();
+						}else{
+							updateJsonTablero();
 						}
 					}else{
 						//La inteligencia esta en comprar casas del mismo color
@@ -155,7 +190,12 @@ function moverJugador() {
 						if (colores.includes(tablero.casillas[casillaNueva].color)) {
 							if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor){
 								comprarPropiedad();
+							}else{
+								updateJsonTablero();
 							}
+						}else{
+							//No la compra x q no es de su color
+							updateJsonTablero();
 						}
 					}
 				}else{
@@ -225,8 +265,14 @@ function moverJugador() {
 						$(".cartasAzules").css("font-size","80px");
 		        		$('.cartasAzules').html('<i class="fa fa-question-circle"></i>');
 			        	tablero.banco-=data.dinero;
-						tablero.jugadores[tablero.turno-1].saldo+=data.dinero;
-						updateJsonTablero();
+			        	if(tablero.banco<=0){
+							//Se le acabo el dinero, buscaremos el jugador con mas dinero y ese ganara!
+							superModal = true;
+							openModal('JUEGO TERMINADO!!!','El jugador: '+jugadorGanador+' ha ganado la Partida con un saldo final de: '+jugadorGanadorSaldo,'ACEPTAR',null,'abandonarJuego();',null);
+						}else{
+							tablero.jugadores[tablero.turno-1].saldo+=data.dinero;
+							updateJsonTablero();
+						}
 					}, 7000);
 		        },
 			    error: function(error) {
@@ -250,7 +296,6 @@ function moverJugador() {
 
 function comprarPropiedad() {
 	//Verificamos si nos alcanza
-	closeModal();
 	if (tablero.jugadores[tablero.turno-1].saldo >= tablero.casillas[casillaNueva].valor) {
 		//Si se puede comprar
 		//Aumentamos saldos
@@ -263,9 +308,12 @@ function comprarPropiedad() {
 		//Actualizamos al usuario
 		tablero.jugadores[tablero.turno-1].propiedades.push(tablero.casillas[casillaNueva]);
 		//Es todo
+		closeModal();
 		updateJsonTablero();
 	}else{
-		openModal('SALDO INSUFICIENTE','No tienes el suficiente saldo para comprar: '+tablero.casillas[casillaNueva].nombre,'ACEPTAR',null,'cancel();',null);
+		if (superModal == false) {
+			openModal('SALDO INSUFICIENTE','No tienes el suficiente saldo para comprar: '+tablero.casillas[casillaNueva].nombre,'ACEPTAR',null,'cancel();',null);
+		}
 	}
 	
 }

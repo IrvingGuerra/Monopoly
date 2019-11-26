@@ -286,7 +286,7 @@ function updateJsonTablero() {
 	$.ajax({
         type: "POST",
         data: JSON.stringify(tablero),
-        url: "/board",
+        url: "/board?boardId=" + idTablero,
         success: function(data){
         	console.log(data);
         	time = 1;

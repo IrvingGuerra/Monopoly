@@ -117,13 +117,12 @@ void onPostBoard(struct mg_connection *nc, struct http_message *hm)
 {
 
     std::string jsonTablero(hm->body.p, hm->body.len);
-    rapidjson::Document board;
-    board.Parse(jsonTablero.c_str());
-    char *filename = new char[board["id"].GetStringLength() + 6];
-    sprintf(filename, "%s.json", board["id"].GetString());
+    char *filename = new char[hm->query_string.len + 6];
+    mg_get_http_var(&hm->query_string, "boardId", filename, sizeof(filename));
+    sprintf(filename, "%s.json", filename);
     saveBoard(jsonTablero.c_str(), filename, jsonTablero.size());
 
-    // Se envía confirmación
+    // Se envía confirmación /board?id=1231
     sendSuccess(nc);
 }
 
